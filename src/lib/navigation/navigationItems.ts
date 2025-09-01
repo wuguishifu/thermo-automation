@@ -1,4 +1,4 @@
-import { Cog, Home, LucideIcon, MapPin } from 'lucide-react';
+import { Cog, Home, LucideIcon, MapPin, Thermometer } from 'lucide-react';
 
 import { Chord, NavigationCommand } from '@/components/commands/types';
 
@@ -20,10 +20,10 @@ export const mainNavigationItems: NavigationMenuItem[] = [
     section: 'general',
   },
   {
-    title: 'Settings',
-    url: '/settings',
-    icon: Cog,
-    chord: ['G', 's'],
+    title: 'All Devices',
+    url: '/devices',
+    icon: Thermometer,
+    chord: ['G', 'd'],
     section: 'general',
   },
   {
@@ -31,7 +31,14 @@ export const mainNavigationItems: NavigationMenuItem[] = [
     url: '/locations',
     icon: MapPin,
     chord: ['G', 'l'],
-    section: 'locations',
+    section: 'general',
+  },
+  {
+    title: 'Settings',
+    url: '/settings',
+    icon: Cog,
+    chord: ['G', 's'],
+    section: 'general',
   },
 ];
 

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ClientInferResponseBody } from '@ts-rest/core';
+import { ClientInferRequest, ClientInferResponseBody } from '@ts-rest/core';
 import { toast } from 'sonner';
 
 import { apiClient } from '@/api/apiClient';
@@ -9,14 +9,18 @@ type DevicesRouter<T extends keyof typeof rootRouter.api.devices> = (typeof root
 
 type ListDevicesResponse = ClientInferResponseBody<DevicesRouter<'listDevices'>>;
 
+type GetDeviceInfoResponse = ClientInferResponseBody<DevicesRouter<'getDeviceInfo'>>;
+type GetDeviceInfoPathParams = ClientInferRequest<DevicesRouter<'getDeviceInfo'>>['params'];
+
 export const devicesApi = createApi({
   reducerPath: 'devicesApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'use apiClient directly',
   }),
-  tagTypes: ['devices'],
+  tagTypes: ['devices', 'device'],
   endpoints: (builder) => ({
     listDevices: builder.query<ListDevicesResponse, void>({
+      keepUnusedDataFor: 180,
       queryFn: () =>
         apiClient.api.devices.listDevices().then((response) => {
           if (response.status === 200) {
@@ -28,7 +32,23 @@ export const devicesApi = createApi({
         }),
       providesTags: ['devices'],
     }),
+    getDeviceInfo: builder.query<GetDeviceInfoResponse, GetDeviceInfoPathParams>({
+      keepUnusedDataFor: 180,
+      queryFn: (params) =>
+        apiClient.api.devices.getDeviceInfo({ params }).then((response) => {
+          if (response.status === 200) {
+            return { data: response.body };
+          }
+
+          toast.error('Failed to get device info');
+          throw new Error('Failed to get device info');
+        }),
+      providesTags: (_, __, arg) => [
+        { type: 'device', id: arg.id },
+        { type: 'device', id: 'LIST' },
+      ],
+    }),
   }),
 });
 
-export const { useListDevicesQuery } = devicesApi;
+export const { useListDevicesQuery, useGetDeviceInfoQuery } = devicesApi;

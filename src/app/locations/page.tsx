@@ -7,7 +7,10 @@ import { AppBreadcrumbs, Breadcrumb } from '@/components/layout/AppBreadcrumbs';
 import { PageContent, PageHeader, PageWrapper } from '@/components/layout/PageLayout';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 
-const breadcrumbs: Breadcrumb[] = [{ url: '/', title: 'Home' }];
+const breadcrumbs: Breadcrumb[] = [
+  { url: '/', title: 'Home' },
+  { url: '/locations', title: 'Locations' },
+];
 
 export default function Locations() {
   const { data } = useListDevicesQuery();

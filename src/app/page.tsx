@@ -1,6 +1,6 @@
 'use client';
 
-import { MapPin } from 'lucide-react';
+import { Cog, MapPin, Thermometer } from 'lucide-react';
 import Link from 'next/link';
 
 import { AppBreadcrumbs } from '@/components/layout/AppBreadcrumbs';
@@ -20,13 +20,41 @@ export default function Home() {
             <Card className="hover:scale-110 transition-all duration-300 w-48">
               <CardHeader className="flex flex-col items-center">
                 <CardTitle>Locations</CardTitle>
-                <CardDescription className="w-full text-center">View all your thermostats</CardDescription>
+                <CardDescription className="w-full text-center">View all your locations</CardDescription>
               </CardHeader>
               <CardContent className="w-full items-center flex justify-center">
                 <MapPin className="size-16" strokeWidth={1} />
               </CardContent>
               <CardFooter className="flex justify-center">
                 <ChordBadge className="text-sm opacity-50">{['G', 'l']}</ChordBadge>
+              </CardFooter>
+            </Card>
+          </Link>
+          <Link href="/devices">
+            <Card className="hover:scale-110 transition-all duration-300 w-48">
+              <CardHeader className="flex flex-col items-center">
+                <CardTitle>Devices</CardTitle>
+                <CardDescription className="w-full text-center">View all your thermostats</CardDescription>
+              </CardHeader>
+              <CardContent className="w-full items-center flex justify-center">
+                <Thermometer className="size-16" strokeWidth={1} />
+              </CardContent>
+              <CardFooter className="flex justify-center">
+                <ChordBadge className="text-sm opacity-50">{['G', 'd']}</ChordBadge>
+              </CardFooter>
+            </Card>
+          </Link>
+          <Link href="/settings">
+            <Card className="hover:scale-110 transition-all duration-300 w-48">
+              <CardHeader className="flex flex-col items-center">
+                <CardTitle>Settings</CardTitle>
+                <CardDescription className="w-full text-center">Manage your preferences</CardDescription>
+              </CardHeader>
+              <CardContent className="w-full items-center flex justify-center">
+                <Cog className="size-16" strokeWidth={1} />
+              </CardContent>
+              <CardFooter className="flex justify-center">
+                <ChordBadge className="text-sm opacity-50">{['G', 's']}</ChordBadge>
               </CardFooter>
             </Card>
           </Link>

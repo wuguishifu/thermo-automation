@@ -10,6 +10,7 @@ const handler = createNextHandler(
   {
     devices: {
       listDevices: async () => {
+        console.log('list devices');
         const response = await httpService.get<{ locationName: string; devices: Device[] }[]>('devices');
         return {
           status: 200,
