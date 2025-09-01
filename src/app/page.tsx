@@ -1,30 +1,37 @@
 'use client';
 
+import { MapPin } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo } from 'react';
 
-import { useListDevicesQuery } from '@/api/devicesApiSlice';
-import { Card, CardTitle } from '@/components/ui/card';
+import { AppBreadcrumbs } from '@/components/layout/AppBreadcrumbs';
+import { PageContent, PageHeader, PageWrapper } from '@/components/layout/PageLayout';
+import { ChordBadge } from '@/components/menus/ChordBadge';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Home() {
-  const { data } = useListDevicesQuery();
-
-  const locations = useMemo(() => {
-    return data?.map((location) => location.locationName);
-  }, [data]);
-
   return (
-    <main className="py-8 px-4 max-w-screen-xl mx-auto">
-      <h1 className="text-2xl font-bold">Locations</h1>
-      <div className="mt-4 flex items-center flex-wrap">
-        {locations?.map((location) => (
-          <Link key={location} href={`/locations/${location}`}>
-            <Card className="w-48">
-              <CardTitle className="text-center text-lg font-semibold">{location}</CardTitle>
+    <PageWrapper>
+      <PageHeader>
+        <AppBreadcrumbs>{[{ url: '/', title: 'Home' }]}</AppBreadcrumbs>
+      </PageHeader>
+      <PageContent>
+        <div className="flex flex-row justify-center items-center gap-4 h-full">
+          <Link href="/locations">
+            <Card className="hover:scale-110 transition-all duration-300 w-48">
+              <CardHeader className="flex flex-col items-center">
+                <CardTitle>Locations</CardTitle>
+                <CardDescription className="w-full text-center">View all your thermostats</CardDescription>
+              </CardHeader>
+              <CardContent className="w-full items-center flex justify-center">
+                <MapPin className="size-16" strokeWidth={1} />
+              </CardContent>
+              <CardFooter className="flex justify-center">
+                <ChordBadge className="text-sm opacity-50">{['G', 'l']}</ChordBadge>
+              </CardFooter>
             </Card>
           </Link>
-        ))}
-      </div>
-    </main>
+        </div>
+      </PageContent>
+    </PageWrapper>
   );
 }
