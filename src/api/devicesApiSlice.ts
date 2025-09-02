@@ -21,6 +21,7 @@ export const devicesApi = createApi({
   endpoints: (builder) => ({
     listDevices: builder.query<ListDevicesResponse, void>({
       keepUnusedDataFor: 180,
+      providesTags: ['devices'],
       queryFn: () =>
         apiClient.api.devices.listDevices().then((response) => {
           if (response.status === 200) {
@@ -30,10 +31,13 @@ export const devicesApi = createApi({
           toast.error('Failed to get devices');
           throw new Error('Failed to get devices');
         }),
-      providesTags: ['devices'],
     }),
     getDeviceInfo: builder.query<GetDeviceInfoResponse, GetDeviceInfoPathParams>({
       keepUnusedDataFor: 180,
+      providesTags: (_, __, arg) => [
+        { type: 'device', id: arg.id },
+        { type: 'device', id: 'LIST' },
+      ],
       queryFn: (params) =>
         apiClient.api.devices.getDeviceInfo({ params }).then((response) => {
           if (response.status === 200) {
@@ -43,10 +47,6 @@ export const devicesApi = createApi({
           toast.error('Failed to get device info');
           throw new Error('Failed to get device info');
         }),
-      providesTags: (_, __, arg) => [
-        { type: 'device', id: arg.id },
-        { type: 'device', id: 'LIST' },
-      ],
     }),
   }),
 });

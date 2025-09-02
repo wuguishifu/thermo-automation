@@ -1,6 +1,9 @@
 import { createNextHandler } from '@ts-rest/serverless/next';
+import { eq } from 'drizzle-orm';
 
 import { rootRouter } from '@/contract/rootRouter';
+import { getDb } from '@/db/client';
+import { schema } from '@/db/schema';
 import { errorHandler } from '@/server/errorHandler';
 import { httpService } from '@/server/httpService';
 import { Device, DeviceInformation } from '@/types/device';
@@ -10,7 +13,6 @@ const handler = createNextHandler(
   {
     devices: {
       listDevices: async () => {
-        console.log('list devices');
         const response = await httpService.get<{ locationName: string; devices: Device[] }[]>('devices');
         return {
           status: 200,
@@ -41,6 +43,44 @@ const handler = createNextHandler(
         return {
           status: 200,
           body: response.data,
+        };
+      },
+    },
+    automations: {
+      listAutomations: async ({ query: { deviceId } }) => {
+        const db = getDb();
+        const automations = await db
+          .select()
+          .from(schema.automations)
+          .where(deviceId ? eq(schema.automations.deviceId, deviceId) : undefined)
+          .then((results) =>
+            results.map(({ createdAt, ...result }) => ({
+              ...result,
+              createdAtMillis: createdAt.getTime(),
+            })),
+          );
+        return {
+          status: 200,
+          body: automations,
+        };
+      },
+      createAutomation: async ({ body }) => {
+        const db = getDb();
+        const [automation] = await db
+          .insert(schema.automations)
+          .values({
+            deviceId: body.deviceId,
+            bufferDegrees: body.bufferDegrees,
+          })
+          .returning();
+        return {
+          status: 201,
+          body: {
+            id: automation.id,
+            deviceId: automation.deviceId,
+            bufferDegrees: automation.bufferDegrees,
+            createdAtMillis: automation.createdAt.getTime(),
+          },
         };
       },
     },

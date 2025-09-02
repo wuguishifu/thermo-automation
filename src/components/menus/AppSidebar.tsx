@@ -1,6 +1,7 @@
-import { Code } from 'lucide-react';
+import { Code, Plus } from 'lucide-react';
 import Link from 'next/link';
 
+import { CreateAutomationPopover } from '@/components/automations/CreateAutomationPopover';
 import { NavigationItem } from '@/components/menus/NavigationItem';
 import { ThemeToggle } from '@/components/menus/ThemeToggle';
 import {
@@ -8,6 +9,7 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -18,9 +20,9 @@ import {
 import { mainNavigationItems, NavigationMenuItem } from '@/lib/navigation/navigationItems';
 
 export function AppSidebar() {
-  const { generalNavigationItems, transfersNavigationItems } = mainNavigationItems.reduce<{
+  const { generalNavigationItems, automationNavigationItems } = mainNavigationItems.reduce<{
     generalNavigationItems: NavigationMenuItem[];
-    transfersNavigationItems: NavigationMenuItem[];
+    automationNavigationItems: NavigationMenuItem[];
   }>(
     (acc, item) => {
       if (item.hideFromSidebar) {
@@ -31,8 +33,8 @@ export function AppSidebar() {
         case 'general':
           acc.generalNavigationItems.push(item);
           break;
-        case 'transfers':
-          acc.transfersNavigationItems.push(item);
+        case 'automation':
+          acc.automationNavigationItems.push(item);
           break;
       }
 
@@ -40,7 +42,7 @@ export function AppSidebar() {
     },
     {
       generalNavigationItems: [],
-      transfersNavigationItems: [],
+      automationNavigationItems: [],
     },
   );
 
@@ -49,7 +51,7 @@ export function AppSidebar() {
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Locations</SidebarGroupLabel>
+          <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {generalNavigationItems.map((item) => (
@@ -57,6 +59,22 @@ export function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Automation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {automationNavigationItems.map((item) => (
+                <NavigationItem key={item.title} item={item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+          <CreateAutomationPopover asChild>
+            <SidebarGroupAction className="cursor-pointer">
+              <Plus />
+              <span className="sr-only">Create Automation</span>
+            </SidebarGroupAction>
+          </CreateAutomationPopover>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

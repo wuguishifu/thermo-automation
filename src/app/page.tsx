@@ -1,6 +1,6 @@
 'use client';
 
-import { Cog, MapPin, Thermometer } from 'lucide-react';
+import { Cog, Thermometer, Workflow } from 'lucide-react';
 import Link from 'next/link';
 
 import { AppBreadcrumbs } from '@/components/layout/AppBreadcrumbs';
@@ -16,20 +16,6 @@ export default function Home() {
       </PageHeader>
       <PageContent>
         <div className="flex flex-row justify-center items-center gap-4 h-full">
-          <Link href="/locations">
-            <Card className="hover:scale-110 transition-all duration-300 w-48">
-              <CardHeader className="flex flex-col items-center">
-                <CardTitle>Locations</CardTitle>
-                <CardDescription className="w-full text-center">View all your locations</CardDescription>
-              </CardHeader>
-              <CardContent className="w-full items-center flex justify-center">
-                <MapPin className="size-16" strokeWidth={1} />
-              </CardContent>
-              <CardFooter className="flex justify-center">
-                <ChordBadge className="text-sm opacity-50">{['G', 'l']}</ChordBadge>
-              </CardFooter>
-            </Card>
-          </Link>
           <Link href="/devices">
             <Card className="hover:scale-110 transition-all duration-300 w-48">
               <CardHeader className="flex flex-col items-center">
@@ -41,6 +27,20 @@ export default function Home() {
               </CardContent>
               <CardFooter className="flex justify-center">
                 <ChordBadge className="text-sm opacity-50">{['G', 'd']}</ChordBadge>
+              </CardFooter>
+            </Card>
+          </Link>
+          <Link href="/automations">
+            <Card className="hover:scale-110 transition-all duration-300 w-48">
+              <CardHeader className="flex flex-col items-center">
+                <CardTitle>Automations</CardTitle>
+                <CardDescription className="w-full text-center">View all your automations</CardDescription>
+              </CardHeader>
+              <CardContent className="w-full items-center flex justify-center">
+                <Workflow className="size-16" strokeWidth={1} />
+              </CardContent>
+              <CardFooter className="flex justify-center">
+                <ChordBadge className="text-sm opacity-50">{['G', 'a']}</ChordBadge>
               </CardFooter>
             </Card>
           </Link>

@@ -1,4 +1,4 @@
-import { Cog, Home, LucideIcon, MapPin, Thermometer } from 'lucide-react';
+import { Cog, Home, LucideIcon, MapPin, Thermometer, Workflow } from 'lucide-react';
 
 import { Chord, NavigationCommand } from '@/components/commands/types';
 
@@ -8,7 +8,7 @@ export type NavigationMenuItem = {
   icon: LucideIcon;
   chord: Chord;
   hideFromSidebar?: boolean;
-  section: 'general' | 'locations';
+  section: 'general' | 'automation';
 };
 
 export const mainNavigationItems: NavigationMenuItem[] = [
@@ -39,6 +39,13 @@ export const mainNavigationItems: NavigationMenuItem[] = [
     icon: Cog,
     chord: ['G', 's'],
     section: 'general',
+  },
+  {
+    title: 'Automations',
+    url: '/automations',
+    icon: Workflow,
+    chord: ['G', 'a'],
+    section: 'automation',
   },
 ];
 
