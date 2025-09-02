@@ -16,6 +16,7 @@ export function AutomationItem({ automation }: { automation: ClientAutomationSch
       <CardDescription>
         <p>Created: {new Date(automation.createdAtMillis).toLocaleString()}</p>
         <p>Temperature Buffer: {automation.bufferDegrees}°C</p>
+        <p>Device ID: {automation.deviceId}</p>
       </CardDescription>
     </Card>
   );
