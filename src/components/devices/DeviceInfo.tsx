@@ -1,33 +1,37 @@
-'use client';
-
+import { DeviceInfoSection } from '@/components/devices/DeviceInfoSection';
 import { Temperature } from '@/components/devices/Temperature';
-import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
-import { Spinner } from '@/components/ui/spinner';
-import { useDeviceInfo } from '@/hooks/useDeviceInfo';
+import { Device, DeviceInformation } from '@/types/device';
 
-export function DeviceInfo({ deviceId }: { deviceId: string }) {
-  const { deviceInfo, isLoading } = useDeviceInfo(deviceId);
+const modeMap: Record<DeviceInformation['mode'], string> = {
+  0: 'Off',
+  1: 'Cooling',
+  2: 'Heating',
+  3: 'Auto',
+  4: 'Emergency Heat',
+};
 
+export function DeviceInfo({ deviceInfo }: { deviceInfo: Partial<Device & DeviceInformation> }) {
   return (
-    <Card className="p-4">
-      <CardTitle className="text-2xl font-bold">{isLoading ? 'Loading...' : deviceInfo.name}</CardTitle>
-      <CardDescription>
-        <p>ID: {deviceInfo.id ?? '...'}</p>
-        <p>Model: {deviceInfo.model ?? '...'}</p>
-        <p>Firmware Version: {deviceInfo.firmwareVersion ?? '...'}</p>
-      </CardDescription>
-      <CardContent className="p-0">
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <>
-            <p>
-              Internal Temperature: <Temperature celsiusValue={deviceInfo.tempIndoor ?? 0} />
-            </p>
-            <p>Internal Humidity: {deviceInfo.humIndoor}%</p>
-          </>
-        )}
-      </CardContent>
-    </Card>
+    <div className="space-y-8">
+      <div className="flex gap-8">
+        <DeviceInfoSection title="Internal Readings">
+          Inside Temperature: <Temperature celsiusValue={deviceInfo.tempIndoor ?? 0} />
+          <br />
+          Inside Humidity: {deviceInfo.humIndoor}%
+        </DeviceInfoSection>
+        <DeviceInfoSection title="External Readings (idk what these come from but they're wrong)">
+          Outside Temperature: <Temperature celsiusValue={deviceInfo.tempOutdoor ?? 0} />
+          <br />
+          Outside Humidity: {deviceInfo.humOutdoor}%
+        </DeviceInfoSection>
+      </div>
+      <DeviceInfoSection title="Device Settings">
+        Cooling Setpoint: <Temperature celsiusValue={deviceInfo.coolSetpoint ?? 0} />
+        <br />
+        Heating Setpoint: <Temperature celsiusValue={deviceInfo.heatSetpoint ?? 0} />
+        <br />
+        Current Mode: {modeMap[deviceInfo.mode ?? 0]}
+      </DeviceInfoSection>
+    </div>
   );
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 
 import { useListDevicesQuery } from '@/api/devicesApiSlice';
-import { Card, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardTitle } from '@/components/ui/card';
 
 export function DevicesList({ locationName }: { locationName?: string }) {
   const { data } = useListDevicesQuery();
@@ -26,8 +26,12 @@ export function DevicesList({ locationName }: { locationName?: string }) {
     <div className="mt-4 flex items-center flex-wrap">
       {devices?.map((device) => (
         <Link key={device.id} href={`/devices/${device.id}`}>
-          <Card className="w-48">
+          <Card className="w-48 p-4">
             <CardTitle className="text-center text-lg font-semibold">{device.name}</CardTitle>
+            <CardDescription>
+              <p>Location: {device.locationName}</p>
+              <p>Model: {device.model}</p>
+            </CardDescription>
           </Card>
         </Link>
       ))}

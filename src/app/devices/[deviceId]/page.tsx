@@ -1,4 +1,4 @@
-import { DeviceInfo } from '@/components/devices/DeviceInfo';
+import { DeviceCard } from '@/components/devices/DeviceCard';
 import { DevicePageBreadcrumbs } from '@/components/devices/DevicePageBreadcrumbs';
 import { PageContent, PageHeader, PageWrapper } from '@/components/layout/PageLayout';
 
@@ -11,7 +11,7 @@ export default async function DevicePage({ params }: { params: Promise<{ deviceI
         <DevicePageBreadcrumbs deviceId={deviceId} />
       </PageHeader>
       <PageContent>
-        <DeviceInfo deviceId={deviceId} />
+        <DeviceCard deviceId={deviceId} />
       </PageContent>
     </PageWrapper>
   );
