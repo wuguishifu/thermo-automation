@@ -3,10 +3,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import z from 'zod';
 
 import { useCreateAutomationMutation } from '@/api/automationsApiSlice';
-import { Temperature } from '@/components/devices/Temperature';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -14,7 +14,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { useDevices } from '@/hooks/useDevices';
-import { useAppSelector } from '@/state/store';
 
 const formSchema = z.object({
   deviceId: z.string(),
@@ -26,7 +25,6 @@ type FormSchema = z.infer<typeof formSchema>;
 type Props = { children: React.ReactNode; asChild?: boolean };
 
 export function CreateAutomationPopover({ children, asChild }: Props) {
-  const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
   const { devices, isLoading: devicesLoading } = useDevices();
 
   const [open, setOpen] = useState(false);
@@ -44,6 +42,11 @@ export function CreateAutomationPopover({ children, asChild }: Props) {
   const handleSubmit = useCallback(
     (values: FormSchema) => {
       if (isLoading) {
+        return;
+      }
+
+      if (!values.deviceId) {
+        toast.error('Please select a device');
         return;
       }
 

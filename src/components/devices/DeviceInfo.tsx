@@ -1,5 +1,10 @@
+import { Workflow } from 'lucide-react';
+import Link from 'next/link';
+
 import { DeviceInfoSection } from '@/components/devices/DeviceInfoSection';
 import { Temperature } from '@/components/devices/Temperature';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Device, DeviceInformation } from '@/types/device';
 
 const modeMap: Record<DeviceInformation['mode'], string> = {
@@ -32,6 +37,10 @@ export function DeviceInfo({ deviceInfo }: { deviceInfo: Partial<Device & Device
         <br />
         Current Mode: {modeMap[deviceInfo.mode ?? 0]}
       </DeviceInfoSection>
+      <Link href={`/devices/${deviceInfo.id}/automations`} className={cn(buttonVariants({ variant: 'default' }))}>
+        <Workflow />
+        <span>Automations</span>
+      </Link>
     </div>
   );
 }

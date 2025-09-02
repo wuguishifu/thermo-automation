@@ -83,6 +83,16 @@ const handler = createNextHandler(
           },
         };
       },
+      deleteAutomation: async ({ query: { id } }) => {
+        const db = getDb();
+        await db.delete(schema.automations).where(eq(schema.automations.id, id));
+        return {
+          status: 200,
+          body: {
+            deleted: true,
+          },
+        };
+      },
     },
   },
   {
@@ -93,4 +103,4 @@ const handler = createNextHandler(
   },
 );
 
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST, handler as DELETE };

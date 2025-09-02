@@ -13,6 +13,9 @@ type ListAutomationsQuery = ClientInferRequest<AutomationsRouter<'listAutomation
 type CreateAutomationResponse = ClientInferResponseBody<AutomationsRouter<'createAutomation'>>;
 type CreateAutomationBody = ClientInferRequest<AutomationsRouter<'createAutomation'>>['body'];
 
+type DeleteAutomationResponse = ClientInferResponseBody<AutomationsRouter<'deleteAutomation'>>;
+type DeleteAutomationBody = ClientInferRequest<AutomationsRouter<'deleteAutomation'>>['query'];
+
 export const automationsApi = createApi({
   reducerPath: 'automationsApi',
   baseQuery: fetchBaseQuery({
@@ -46,7 +49,20 @@ export const automationsApi = createApi({
           throw new Error('Failed to create automation');
         }),
     }),
+    deleteAutomation: builder.mutation<DeleteAutomationResponse, DeleteAutomationBody>({
+      invalidatesTags: ['automations'],
+      queryFn: (query) =>
+        apiClient.api.automations.deleteAutomation({ query }).then((response) => {
+          if (response.status === 200) {
+            toast.success('Automation deleted successfully');
+            return { data: response.body };
+          }
+
+          toast.error('Failed to delete automation');
+          throw new Error('Failed to delete automation');
+        }),
+    }),
   }),
 });
 
-export const { useListAutomationsQuery, useCreateAutomationMutation } = automationsApi;
+export const { useListAutomationsQuery, useCreateAutomationMutation, useDeleteAutomationMutation } = automationsApi;

@@ -14,6 +14,7 @@ export default function Automations() {
         <AppBreadcrumbs>{breadcrumbs}</AppBreadcrumbs>
       </PageHeader>
       <PageContent>
+        <h1 className="text-2xl font-bold">All Automations</h1>
         <AutomationsList />
       </PageContent>
     </PageWrapper>

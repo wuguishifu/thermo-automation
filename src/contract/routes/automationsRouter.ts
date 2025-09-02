@@ -39,6 +39,19 @@ export const automationsRouter = c.router(
         }),
       },
     },
+    deleteAutomation: {
+      summary: 'Delete an automation',
+      method: 'DELETE',
+      path: '/',
+      query: z.object({
+        id: z.number(),
+      }),
+      responses: {
+        200: z.object({
+          deleted: z.literal(true),
+        }),
+      },
+    },
   },
   {
     pathPrefix: '/automations',
