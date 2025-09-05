@@ -6,7 +6,11 @@ import { getDb } from '@/db/client';
 import { schema } from '@/db/schema';
 import { errorHandler } from '@/server/errorHandler';
 import { httpService } from '@/server/httpService';
+import { initializeCronJob } from '@/server/initializeCron';
 import { Device, DeviceInformation } from '@/types/device';
+
+// Initialize cron job when the API route is first loaded
+initializeCronJob();
 
 const handler = createNextHandler(
   rootRouter.api,
@@ -97,22 +101,22 @@ const handler = createNextHandler(
           },
         };
       },
-      enableAutomation: async ({ body: { id }}) => {
+      enableAutomation: async ({ body: { id } }) => {
         const db = getDb();
         await db.update(schema.automations).set({ enabled: true }).where(eq(schema.automations.id, id));
         return {
           status: 200,
           body: 'ok',
-        }
+        };
       },
-      disableAutomation: async ({ body: { id }}) => {
+      disableAutomation: async ({ body: { id } }) => {
         const db = getDb();
         await db.update(schema.automations).set({ enabled: false }).where(eq(schema.automations.id, id));
         return {
           status: 200,
           body: 'ok',
-        }
-      }
+        };
+      },
     },
   },
   {

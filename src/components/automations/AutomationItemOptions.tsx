@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
 
-import { useDeleteAutomationMutation, useDisableAutomationMutation, useEnableAutomationMutation } from '@/api/automationsApiSlice';
+import {
+  useDeleteAutomationMutation,
+  useDisableAutomationMutation,
+  useEnableAutomationMutation,
+} from '@/api/automationsApiSlice';
 import {
   DropdownMenu,
   DropdownMenuContent,

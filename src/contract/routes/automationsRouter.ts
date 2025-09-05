@@ -54,7 +54,7 @@ export const automationsRouter = c.router(
       }),
       responses: {
         200: z.literal('ok'),
-      }
+      },
     },
     disableAutomation: {
       summary: 'Disable an automation',
@@ -65,7 +65,7 @@ export const automationsRouter = c.router(
       }),
       responses: {
         200: z.literal('ok'),
-      }
+      },
     },
   },
   {

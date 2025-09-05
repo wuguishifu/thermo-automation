@@ -97,4 +97,10 @@ export const automationsApi = createApi({
   }),
 });
 
-export const { useListAutomationsQuery, useCreateAutomationMutation, useDeleteAutomationMutation, useEnableAutomationMutation, useDisableAutomationMutation } = automationsApi;
+export const {
+  useListAutomationsQuery,
+  useCreateAutomationMutation,
+  useDeleteAutomationMutation,
+  useEnableAutomationMutation,
+  useDisableAutomationMutation,
+} = automationsApi;

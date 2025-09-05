@@ -4,27 +4,27 @@ import Link from 'next/link';
 import { AutomationItemOptions } from '@/components/automations/AutomationItemOptions';
 import { Temperature } from '@/components/devices/Temperature';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { Automation } from '@/types/automation';
 import { Device } from '@/types/device';
-import { cn } from '@/lib/utils';
 
 export function AutomationItem({ automation, device }: { automation: Automation; device?: Device }) {
   return (
     <Card className="p-4">
-      <CardTitle className={cn("flex items-center justify-between", {'opacity-50': !automation.enabled})}>
+      <CardTitle className={cn('flex items-center justify-between', { 'opacity-50': !automation.enabled })}>
         <span>Automation ID: {automation.id}</span>
         <AutomationItemOptions automation={automation}>
           <MoreVertical size={16} />
         </AutomationItemOptions>
       </CardTitle>
-      <CardDescription className={cn({'opacity-50': !automation.enabled})}>
+      <CardDescription className={cn({ 'opacity-50': !automation.enabled })}>
         <Link href={`/devices/${automation.deviceId}`} className="flex gap-2">
           <span>Device: {device?.name ?? automation.deviceId.slice(0, 8)}</span>
           <ExternalLink size={16} />
         </Link>
         <p>Created: {new Date(automation.createdAt).toLocaleString()}</p>
       </CardDescription>
-      <CardContent className={cn("p-0", {'opacity-50': !automation.enabled})}>
+      <CardContent className={cn('p-0', { 'opacity-50': !automation.enabled })}>
         <p>
           {automation.startsAt} - {automation.endsAt}
         </p>
