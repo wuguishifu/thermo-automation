@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, serial, text, time, timestamp } from 'drizzle-orm/pg-core';
+import { integer, pgTable, serial, text, time, timestamp } from 'drizzle-orm/pg-core';
 
 export const automationsSchema = pgTable('automations', {
   id: serial('id').primaryKey(),
@@ -9,7 +9,6 @@ export const automationsSchema = pgTable('automations', {
   maxTemperature: integer('max_temperature'),
   minTemperature: integer('min_temperature'),
   bufferDegrees: integer('buffer_degrees').notNull(),
-  wraps: boolean('wraps').notNull().default(false),
 });
 
 export const schema = {

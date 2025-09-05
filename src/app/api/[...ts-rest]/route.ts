@@ -52,13 +52,7 @@ const handler = createNextHandler(
         const automations = await db
           .select()
           .from(schema.automations)
-          .where(deviceId ? eq(schema.automations.deviceId, deviceId) : undefined)
-          .then((results) =>
-            results.map(({ createdAt, ...result }) => ({
-              ...result,
-              createdAtMillis: createdAt.getTime(),
-            })),
-          );
+          .where(deviceId ? eq(schema.automations.deviceId, deviceId) : undefined);
         return {
           status: 200,
           body: automations,
@@ -70,17 +64,16 @@ const handler = createNextHandler(
           .insert(schema.automations)
           .values({
             deviceId: body.deviceId,
+            startsAt: body.startsAt,
+            endsAt: body.endsAt,
+            maxTemperature: body.maxTemperature,
+            minTemperature: body.minTemperature,
             bufferDegrees: body.bufferDegrees,
           })
           .returning();
         return {
           status: 201,
-          body: {
-            id: automation.id,
-            deviceId: automation.deviceId,
-            bufferDegrees: automation.bufferDegrees,
-            createdAtMillis: automation.createdAt.getTime(),
-          },
+          body: automation,
         };
       },
       deleteAutomation: async ({ query: { id } }) => {

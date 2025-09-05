@@ -7,6 +7,7 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -35,6 +36,7 @@ export function AutomationItemOptions({ children, automationId, asChild }: Autom
       <DropdownMenuContent>
         <DropdownMenuGroup>
           <DropdownMenuLabel>Options</DropdownMenuLabel>
+          <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer" onSelect={handleDelete}>
             <span className="text-destructive">Delete</span>
           </DropdownMenuItem>

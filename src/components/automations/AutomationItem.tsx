@@ -2,9 +2,9 @@ import { MoreVertical } from 'lucide-react';
 
 import { AutomationItemOptions } from '@/components/automations/AutomationItemOptions';
 import { Card, CardDescription, CardTitle } from '@/components/ui/card';
-import { ClientAutomationSchema } from '@/db/types';
+import { Automation } from '@/types/automation';
 
-export function AutomationItem({ automation }: { automation: ClientAutomationSchema }) {
+export function AutomationItem({ automation }: { automation: Automation }) {
   return (
     <Card className="p-4">
       <CardTitle className="flex items-center justify-between">
@@ -14,7 +14,7 @@ export function AutomationItem({ automation }: { automation: ClientAutomationSch
         </AutomationItemOptions>
       </CardTitle>
       <CardDescription>
-        <p>Created: {new Date(automation.createdAtMillis).toLocaleString()}</p>
+        <p>Created: {new Date(automation.createdAt).toLocaleString()}</p>
         <p>Temperature Buffer: {automation.bufferDegrees}°C</p>
         <p>Device ID: {automation.deviceId}</p>
       </CardDescription>

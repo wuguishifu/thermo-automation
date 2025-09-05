@@ -1,7 +1,7 @@
 import { Code, Plus } from 'lucide-react';
 import Link from 'next/link';
 
-import { CreateAutomationPopover } from '@/components/automations/CreateAutomationPopover';
+import { CreateAutomationDialog } from '@/components/automations/CreateAutomationDialog';
 import { NavigationItem } from '@/components/menus/NavigationItem';
 import { ThemeToggle } from '@/components/menus/ThemeToggle';
 import {
@@ -69,12 +69,12 @@ export function AppSidebar() {
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
-          <CreateAutomationPopover asChild>
+          <CreateAutomationDialog asChild>
             <SidebarGroupAction className="cursor-pointer">
               <Plus />
               <span className="sr-only">Create Automation</span>
             </SidebarGroupAction>
-          </CreateAutomationPopover>
+          </CreateAutomationDialog>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

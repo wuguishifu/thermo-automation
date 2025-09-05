@@ -1,6 +1,7 @@
 import z from 'zod';
 
 import { c } from '@/contract/contract';
+import { Automation } from '@/types/automation';
 
 export const automationsRouter = c.router(
   {
@@ -12,14 +13,7 @@ export const automationsRouter = c.router(
         deviceId: z.string().optional(),
       }),
       responses: {
-        200: z.array(
-          z.object({
-            id: z.number(),
-            deviceId: z.string(),
-            bufferDegrees: z.number(),
-            createdAtMillis: z.number(),
-          }),
-        ),
+        200: z.array(Automation),
       },
     },
     createAutomation: {
@@ -28,15 +22,15 @@ export const automationsRouter = c.router(
       path: '/',
       body: z.object({
         deviceId: z.string(),
+        startsAt: z.string(),
+        endsAt: z.string(),
+        maxTemperature: z.number().optional(),
+        minTemperature: z.number().optional(),
         bufferDegrees: z.number(),
+        wraps: z.boolean(),
       }),
       responses: {
-        201: z.object({
-          id: z.number(),
-          deviceId: z.string(),
-          bufferDegrees: z.number(),
-          createdAtMillis: z.number(),
-        }),
+        201: Automation,
       },
     },
     deleteAutomation: {
