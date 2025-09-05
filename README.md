@@ -9,3 +9,5 @@ This is a self-hostable project to automate Daikin thermometers.
 ## TODO
 
 - [ ] Shimmer in the breadcrumb for device name
+- [ ] Move cron into separate service in the Dockerfile
+  - [ ] Start cron service when running `pnpm dev` (?)
