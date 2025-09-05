@@ -27,7 +27,6 @@ export const automationsRouter = c.router(
         maxTemperature: z.number().optional(),
         minTemperature: z.number().optional(),
         bufferDegrees: z.number(),
-        wraps: z.boolean(),
       }),
       responses: {
         201: Automation,
@@ -45,6 +44,28 @@ export const automationsRouter = c.router(
           deleted: z.literal(true),
         }),
       },
+    },
+    enableAutomation: {
+      summary: 'Enable an automation',
+      method: 'POST',
+      path: '/enable',
+      body: z.object({
+        id: z.number(),
+      }),
+      responses: {
+        200: z.literal('ok'),
+      }
+    },
+    disableAutomation: {
+      summary: 'Disable an automation',
+      method: 'POST',
+      path: '/disable',
+      body: z.object({
+        id: z.number(),
+      }),
+      responses: {
+        200: z.literal('ok'),
+      }
     },
   },
   {

@@ -16,6 +16,12 @@ type CreateAutomationBody = ClientInferRequest<AutomationsRouter<'createAutomati
 type DeleteAutomationResponse = ClientInferResponseBody<AutomationsRouter<'deleteAutomation'>>;
 type DeleteAutomationBody = ClientInferRequest<AutomationsRouter<'deleteAutomation'>>['query'];
 
+type EnableAutomationResponse = ClientInferResponseBody<AutomationsRouter<'enableAutomation'>>;
+type EnableAutomationBody = ClientInferRequest<AutomationsRouter<'enableAutomation'>>['body'];
+
+type DisableAutomationResponse = ClientInferResponseBody<AutomationsRouter<'disableAutomation'>>;
+type DisableAutomationBody = ClientInferRequest<AutomationsRouter<'disableAutomation'>>['body'];
+
 export const automationsApi = createApi({
   reducerPath: 'automationsApi',
   baseQuery: fetchBaseQuery({
@@ -62,7 +68,33 @@ export const automationsApi = createApi({
           throw new Error('Failed to delete automation');
         }),
     }),
+    enableAutomation: builder.mutation<EnableAutomationResponse, EnableAutomationBody>({
+      invalidatesTags: ['automations'],
+      queryFn: (body) =>
+        apiClient.api.automations.enableAutomation({ body }).then((response) => {
+          if (response.status === 200) {
+            toast.success('Automation enabled successfully');
+            return { data: response.body };
+          }
+
+          toast.error('Failed to enable automation');
+          throw new Error('Failed to enable automation');
+        }),
+    }),
+    disableAutomation: builder.mutation<DisableAutomationResponse, DisableAutomationBody>({
+      invalidatesTags: ['automations'],
+      queryFn: (body) =>
+        apiClient.api.automations.disableAutomation({ body }).then((response) => {
+          if (response.status === 200) {
+            toast.success('Automation disabled successfully');
+            return { data: response.body };
+          }
+
+          toast.error('Failed to disable automation');
+          throw new Error('Failed to disable automation');
+        }),
+    }),
   }),
 });
 
-export const { useListAutomationsQuery, useCreateAutomationMutation, useDeleteAutomationMutation } = automationsApi;
+export const { useListAutomationsQuery, useCreateAutomationMutation, useDeleteAutomationMutation, useEnableAutomationMutation, useDisableAutomationMutation } = automationsApi;

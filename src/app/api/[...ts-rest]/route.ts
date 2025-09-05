@@ -1,5 +1,5 @@
 import { createNextHandler } from '@ts-rest/serverless/next';
-import { eq } from 'drizzle-orm';
+import { asc, eq, sql } from 'drizzle-orm';
 
 import { rootRouter } from '@/contract/rootRouter';
 import { getDb } from '@/db/client';
@@ -50,9 +50,20 @@ const handler = createNextHandler(
       listAutomations: async ({ query: { deviceId } }) => {
         const db = getDb();
         const automations = await db
-          .select()
+          .select({
+            id: schema.automations.id,
+            deviceId: schema.automations.deviceId,
+            createdAt: schema.automations.createdAt,
+            startsAt: sql<string>`to_char(${schema.automations.startsAt}::time, 'HH12:MI AM')`,
+            endsAt: sql<string>`to_char(${schema.automations.endsAt}::time, 'HH12:MI AM')`,
+            maxTemperature: schema.automations.maxTemperature,
+            minTemperature: schema.automations.minTemperature,
+            bufferDegrees: schema.automations.bufferDegrees,
+            enabled: schema.automations.enabled,
+          })
           .from(schema.automations)
-          .where(deviceId ? eq(schema.automations.deviceId, deviceId) : undefined);
+          .where(deviceId ? eq(schema.automations.deviceId, deviceId) : undefined)
+          .orderBy(asc(schema.automations.createdAt));
         return {
           status: 200,
           body: automations,
@@ -86,6 +97,22 @@ const handler = createNextHandler(
           },
         };
       },
+      enableAutomation: async ({ body: { id }}) => {
+        const db = getDb();
+        await db.update(schema.automations).set({ enabled: true }).where(eq(schema.automations.id, id));
+        return {
+          status: 200,
+          body: 'ok',
+        }
+      },
+      disableAutomation: async ({ body: { id }}) => {
+        const db = getDb();
+        await db.update(schema.automations).set({ enabled: false }).where(eq(schema.automations.id, id));
+        return {
+          status: 200,
+          body: 'ok',
+        }
+      }
     },
   },
   {
@@ -96,4 +123,4 @@ const handler = createNextHandler(
   },
 );
 
-export { handler as GET, handler as POST, handler as DELETE };
+export { handler as DELETE, handler as GET, handler as POST };

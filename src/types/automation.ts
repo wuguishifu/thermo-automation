@@ -9,5 +9,6 @@ export const Automation = z.object({
   bufferDegrees: z.number(),
   id: z.number(),
   createdAt: z.date(),
+  enabled: z.boolean(),
 });
 export type Automation = z.infer<typeof Automation>;

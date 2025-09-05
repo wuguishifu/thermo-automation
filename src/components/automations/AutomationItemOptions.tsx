@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useDeleteAutomationMutation } from '@/api/automationsApiSlice';
+import { useDeleteAutomationMutation, useDisableAutomationMutation, useEnableAutomationMutation } from '@/api/automationsApiSlice';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,23 +10,42 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Automation } from '@/types/automation';
 
 type AutomationItemOptionsProps = {
   children: React.ReactNode;
-  automationId: number;
+  automation: Automation;
   asChild?: boolean;
 };
 
-export function AutomationItemOptions({ children, automationId, asChild }: AutomationItemOptionsProps) {
+export function AutomationItemOptions({ children, automation, asChild }: AutomationItemOptionsProps) {
   const [deleteAutomation, { isLoading }] = useDeleteAutomationMutation();
+  const [enableMutation, { isLoading: isEnabling }] = useEnableAutomationMutation();
+  const [disableMutation, { isLoading: isDisabling }] = useDisableAutomationMutation();
 
   const handleDelete = useCallback(() => {
     if (isLoading) {
       return;
     }
 
-    deleteAutomation({ id: automationId });
-  }, [deleteAutomation, isLoading, automationId]);
+    deleteAutomation({ id: automation.id });
+  }, [deleteAutomation, isLoading, automation.id]);
+
+  const handleEnabled = useCallback(() => {
+    if (isEnabling) {
+      return;
+    }
+
+    enableMutation({ id: automation.id });
+  }, [enableMutation, isEnabling, automation.id]);
+
+  const handleDisabled = useCallback(() => {
+    if (isDisabling) {
+      return;
+    }
+
+    disableMutation({ id: automation.id });
+  }, [disableMutation, isDisabling, automation.id]);
 
   return (
     <DropdownMenu>
@@ -37,6 +56,9 @@ export function AutomationItemOptions({ children, automationId, asChild }: Autom
         <DropdownMenuGroup>
           <DropdownMenuLabel>Options</DropdownMenuLabel>
           <DropdownMenuSeparator />
+          <DropdownMenuItem className="cursor-pointer" onSelect={automation.enabled ? handleDisabled : handleEnabled}>
+            <span>{automation.enabled ? 'Disable' : 'Enable'} Automation</span>
+          </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer" onSelect={handleDelete}>
             <span className="text-destructive">Delete</span>
           </DropdownMenuItem>
