@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { mainNavigationItems } from '@/lib/navigation/navigationItems';
-
 import {
   CommandDialog,
   CommandEmpty,
@@ -15,6 +13,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { mainNavigationItems } from '@/lib/navigation/navigationItems';
 
 export function CommandMenu() {
   const { setTheme } = useTheme();
