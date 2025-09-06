@@ -6,11 +6,7 @@ import { getDb } from '@/db/client';
 import { schema } from '@/db/schema';
 import { errorHandler } from '@/server/errorHandler';
 import { httpService } from '@/server/httpService';
-import { initializeCronJob } from '@/server/initializeCron';
 import { Device, DeviceInformation } from '@/types/device';
-
-// Initialize cron job when the API route is first loaded
-initializeCronJob();
 
 const handler = createNextHandler(
   rootRouter.api,
