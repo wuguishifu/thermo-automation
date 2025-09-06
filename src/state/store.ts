@@ -5,6 +5,7 @@ import persistStore from 'redux-persist/es/persistStore';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 import { automationsApi } from '@/api/automationsApiSlice';
+import { dataApi } from '@/api/dataApiSlice';
 import { devicesApi } from '@/api/devicesApiSlice';
 import { reduxLocalStorage } from '@/state/local-storage';
 import { settingsSlice } from '@/state/settingsSlice';
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   [settingsSlice.name]: settingsSlice.reducer,
   [devicesApi.reducerPath]: devicesApi.reducer,
   [automationsApi.reducerPath]: automationsApi.reducer,
+  [dataApi.reducerPath]: dataApi.reducer,
 });
 
 const persistConfig: PersistConfig<RootState> = {
@@ -30,7 +32,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       immutableCheck: false,
       serializableCheck: false,
-    }).concat([devicesApi.middleware, automationsApi.middleware]),
+    }).concat([devicesApi.middleware, automationsApi.middleware, dataApi.middleware]),
 });
 
 export const persistor = persistStore(store);
