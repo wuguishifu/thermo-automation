@@ -1,11 +1,11 @@
 import { createNextHandler } from '@ts-rest/serverless/next';
+import { addDays } from 'date-fns';
 import { and, asc, eq, gte, lt } from 'drizzle-orm';
 
 import { rootRouter } from '@/contract/rootRouter';
 import { getDb } from '@/db/client';
 import { deviceStatusRecordsSchema } from '@/db/schema';
 import { errorHandler } from '@/server/errorHandler';
-import { addDays } from 'date-fns';
 
 const handler = createNextHandler(
   rootRouter.api.data,
@@ -20,12 +20,10 @@ const handler = createNextHandler(
           and(
             eq(deviceStatusRecordsSchema.deviceId, deviceId),
             gte(deviceStatusRecordsSchema.recordedAt, new Date(startDate)),
-            lt(deviceStatusRecordsSchema.recordedAt, addDays(new Date(), periodDays))
-          )
+            lt(deviceStatusRecordsSchema.recordedAt, addDays(new Date(), periodDays)),
+          ),
         )
         .orderBy(asc(deviceStatusRecordsSchema.recordedAt));
-
-      console.log(data);
 
       return { status: 200, body: data };
     },

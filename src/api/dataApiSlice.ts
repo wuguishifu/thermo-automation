@@ -26,8 +26,6 @@ export const dataApi = createApi({
       ],
       queryFn: (data) =>
         apiClient.api.data.getDeviceData(data).then((response) => {
-          console.log({ response });
-
           if (response.status === 200) {
             return { data: response.body };
           }

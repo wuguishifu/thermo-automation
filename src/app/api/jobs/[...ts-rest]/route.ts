@@ -37,8 +37,8 @@ const handler = createNextHandler(
           )
           .map((result) => ({
             deviceId: result.value.deviceId,
-            maxTemperature: result.value.data.setpointMaximum,
-            minTemperature: result.value.data.setpointMinimum,
+            maxTemperature: result.value.data.coolSetpoint,
+            minTemperature: result.value.data.heatSetpoint,
             currentTemperature: result.value.data.tempIndoor,
             currentHumidity: result.value.data.humIndoor,
             currentMode: result.value.data.mode,
