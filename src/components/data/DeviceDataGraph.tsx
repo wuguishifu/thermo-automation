@@ -165,9 +165,7 @@ export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
                   />
                 }
               />
-              <ReferenceLine
-                x={chartData[0].time}
-              >
+              <ReferenceLine x={chartData[0].time}>
                 <Label
                   value={modeLabels[chartData[0].mode]}
                   position="insideTopLeft"
