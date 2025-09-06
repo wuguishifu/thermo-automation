@@ -1,0 +1,150 @@
+{
+  "id": "61071f0d-80c9-4d9b-bc9e-ca7b6c85aa68",
+  "prevId": "9e288a34-7f21-46eb-989c-01baa1e878f0",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.automations": {
+      "name": "automations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "starts_at": {
+          "name": "starts_at",
+          "type": "time with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ends_at": {
+          "name": "ends_at",
+          "type": "time with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "max_temperature": {
+          "name": "max_temperature",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "min_temperature": {
+          "name": "min_temperature",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "buffer_degrees": {
+          "name": "buffer_degrees",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "enabled": {
+          "name": "enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.device_status_records": {
+      "name": "device_status_records",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "device_id": {
+          "name": "device_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "recorded_at": {
+          "name": "recorded_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "max_temperature": {
+          "name": "max_temperature",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "min_temperature": {
+          "name": "min_temperature",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current_temperature": {
+          "name": "current_temperature",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current_mode": {
+          "name": "current_mode",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "humidity": {
+          "name": "humidity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

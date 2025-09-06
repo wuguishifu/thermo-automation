@@ -8,7 +8,7 @@ export const automationsRouter = c.router(
     listAutomations: {
       summary: 'Get automations',
       method: 'GET',
-      path: '/',
+      path: '/list',
       query: z.object({
         deviceId: z.string().optional(),
       }),
@@ -19,7 +19,7 @@ export const automationsRouter = c.router(
     createAutomation: {
       summary: 'Create an automation',
       method: 'POST',
-      path: '/',
+      path: '/create',
       body: z.object({
         deviceId: z.string(),
         startsAt: z.string(),
@@ -35,7 +35,7 @@ export const automationsRouter = c.router(
     deleteAutomation: {
       summary: 'Delete an automation',
       method: 'DELETE',
-      path: '/',
+      path: '/delete',
       query: z.object({
         id: z.number(),
       }),

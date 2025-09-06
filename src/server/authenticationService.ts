@@ -7,11 +7,11 @@ class AuthenticationService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.API_KEY || '',
+        'x-api-key': process.env.DAIKIN_API_KEY || '',
       },
       body: JSON.stringify({
         email: process.env.EMAIL,
-        integratorToken: process.env.INTEGRATOR_TOKEN,
+        integratorToken: process.env.DAIKIN_INTEGRATOR_TOKEN,
       }),
     }).then((response) => response.json());
 

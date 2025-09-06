@@ -8,7 +8,7 @@ export const devicesRouter = c.router(
     listDevices: {
       summary: 'List all devices',
       method: 'GET',
-      path: '/devices',
+      path: '/list',
       responses: {
         200: z.array(
           z.object({
@@ -28,7 +28,7 @@ export const devicesRouter = c.router(
     getDeviceInfo: {
       summary: 'Get info for a device',
       method: 'GET',
-      path: '/devices/:id',
+      path: '/info/:id',
       pathParams: z.object({
         id: z.string(),
       }),
@@ -38,6 +38,6 @@ export const devicesRouter = c.router(
     },
   },
   {
-    pathPrefix: '/thermostat',
+    pathPrefix: '/devices',
   },
 );

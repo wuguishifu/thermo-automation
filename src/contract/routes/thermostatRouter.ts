@@ -7,7 +7,7 @@ export const thermostatRouter = c.router(
     updateMode: {
       summary: 'Update the thermostat mode',
       method: 'PUT',
-      path: '/',
+      path: '/mode',
       body: z.object({
         deviceId: z.string(),
         mode: z.number(),

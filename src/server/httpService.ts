@@ -11,7 +11,7 @@ class HttpService {
       timeout: 5000,
       baseURL: 'https://integrator-api.daikinskyport.com/v1/',
       headers: {
-        'x-api-key': process.env.API_KEY || '',
+        'x-api-key': process.env.DAIKIN_API_KEY || '',
       },
     };
 
