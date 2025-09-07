@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { eq } from 'drizzle-orm';
 import * as cron from 'node-cron';
 

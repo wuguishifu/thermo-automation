@@ -26,6 +26,7 @@ class HttpService {
   }
 
   public get = async <Response>(url: string, config?: AxiosRequestConfig) => {
+    console.log('GET', url);
     const refreshToken = await authenticationService.getAuthenticationToken();
     return this.instance.get<Response>(url, {
       ...config,
@@ -37,6 +38,7 @@ class HttpService {
   };
 
   public post = async <Response, Data>(url: string, data?: Data, config?: AxiosRequestConfig) => {
+    console.log('POST', url, data);
     const refreshToken = await authenticationService.getAuthenticationToken();
     return this.instance.post<Response>(url, data, {
       ...config,
@@ -48,6 +50,7 @@ class HttpService {
   };
 
   public put = async <Response, Data>(url: string, data?: Data, config?: AxiosRequestConfig) => {
+    console.log('PUT', url, data);
     const refreshToken = await authenticationService.getAuthenticationToken();
     return this.instance.put<Response>(url, data, {
       ...config,
@@ -59,6 +62,7 @@ class HttpService {
   };
 
   public patch = async <Response, Data>(url: string, data?: Data, config?: AxiosRequestConfig) => {
+    console.log('PATCH', url, data);
     const refreshToken = await authenticationService.getAuthenticationToken();
     return this.instance.patch<Response>(url, data, {
       ...config,
@@ -70,6 +74,7 @@ class HttpService {
   };
 
   public delete = async <Response>(url: string, config?: AxiosRequestConfig) => {
+    console.log('DELETE', url);
     const refreshToken = await authenticationService.getAuthenticationToken();
     return this.instance.delete<Response>(url, {
       ...config,

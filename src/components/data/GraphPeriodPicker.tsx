@@ -20,7 +20,7 @@ export function GraphPeriodPicker() {
   );
 
   return (
-    <div className='flex items-center gap-2'>
+    <div className="flex items-center gap-2">
       <Select value={period.toString()} onValueChange={(value) => handlePeriodChange(parseInt(value))}>
         <SelectTrigger className="w-[120px]" id="period">
           <SelectValue />

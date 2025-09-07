@@ -9,11 +9,11 @@ export const Device = z.object({
 export type Device = z.infer<typeof Device>;
 
 export enum Mode {
-  Off = 0,
-  Heat = 1,
-  Cool = 2,
-  Auto = 3,
-  EmergencyHeat = 4,
+  OFF = 0,
+  HEAT = 1,
+  COOL = 2,
+  AUTO = 3,
+  EMERGENCY_HEAT = 4,
 }
 
 export const DeviceInformation = z.object({
@@ -93,3 +93,9 @@ export const Location = z.object({
   devices: z.array(Device),
 });
 export type Location = z.infer<typeof Location>;
+
+export const LocationWithDevices = z.object({
+  locationName: z.string(),
+  devices: z.array(Device),
+});
+export type LocationWithDevices = z.infer<typeof LocationWithDevices>;

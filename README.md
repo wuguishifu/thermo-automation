@@ -13,3 +13,5 @@ This is a self-hostable project to automate Daikin thermometers.
   - [ ] Start cron service when running `pnpm dev` (?)
 - [ ] Fix the classic timezone issue 🙄
 - [ ] Add a temporary override option with: setpoints, optional buffer (1 or 2?), optional duration (selection or input?)
+- [ ] Fix temperature display settings to actually honor °F
+- [x] Make thermostat turn off when there are no automations or locks
