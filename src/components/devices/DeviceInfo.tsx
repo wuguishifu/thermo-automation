@@ -37,6 +37,13 @@ export function DeviceInfo({ deviceInfo }: { deviceInfo: Partial<Device & Device
         <br />
         Current Mode: {modeMap[deviceInfo.mode ?? 0]}
       </DeviceInfoSection>
+      <DeviceInfoSection title="Device Limits">
+        Minimum Setpoint: <Temperature celsiusValue={deviceInfo.setpointMinimum ?? 0} />
+        <br />
+        Maximum Setpoint: <Temperature celsiusValue={deviceInfo.setpointMaximum ?? 0} />
+        <br />
+        Minimum Delta: <Temperature celsiusValue={deviceInfo.setpointDelta ?? 0} />
+      </DeviceInfoSection>
       <Link href={`/devices/${deviceInfo.id}/automations`} className={cn(buttonVariants({ variant: 'default' }))}>
         <Workflow />
         <span>Automations</span>

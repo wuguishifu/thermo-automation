@@ -10,13 +10,11 @@ const handler = createNextHandler(
     updateMode: async ({ body }) => {
       const response = await httpService.put<
         { message: string },
-        { body: { mode: number; heatSetpoint: number; coolSetpoint: number } }
+        { mode: number; heatSetpoint: number; coolSetpoint: number }
       >(`/devices/${body.deviceId}/msp`, {
-        body: {
-          mode: body.mode,
-          heatSetpoint: body.heatSetpoint,
-          coolSetpoint: body.coolSetpoint,
-        },
+        mode: body.mode,
+        heatSetpoint: body.heatSetpoint,
+        coolSetpoint: body.coolSetpoint,
       });
 
       return {

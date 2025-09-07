@@ -8,6 +8,14 @@ export const Device = z.object({
 });
 export type Device = z.infer<typeof Device>;
 
+export enum Mode {
+  Off = 0,
+  Heat = 1,
+  Cool = 2,
+  Auto = 3,
+  EmergencyHeat = 4,
+}
+
 export const DeviceInformation = z.object({
   /**
    * HVAC equipment status

@@ -150,7 +150,7 @@ export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
               <YAxis
                 className="text-xs"
                 tick={{ fontSize: 12 }}
-                label={{ value: 'Temperature (°F)', angle: -90, position: 'insideLeft' }}
+                label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
                 domain={[12, 28]}
               />
               <ChartTooltip
