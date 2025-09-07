@@ -1,14 +1,14 @@
+import { subDays } from 'date-fns';
 import { redirect } from 'next/navigation';
 
 import { DeviceDataGraph } from '@/components/data/DeviceDataGraph';
 import { DeviceDataPageBreadcrumbs } from '@/components/data/DeviceDataPageBreadcrumbs';
 import { PageContent, PageHeader, PageWrapper } from '@/components/layout/PageLayout';
-import { subDays } from 'date-fns';
 
 export default async function DeviceDataPage({
   searchParams,
   params,
-}:{
+}: {
   searchParams: Promise<Partial<{ start: string; period: string }>>;
   params: Promise<{ deviceId: string }>;
 }) {

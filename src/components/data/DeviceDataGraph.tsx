@@ -52,19 +52,20 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
   const device = useDevice(deviceId);
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
 
-  const chartData: ChartDataPoint[] = data?.map((record: Record) => ({
-    time: new Date(record.recordedAt).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      month: 'short',
-      day: 'numeric',
-    }),
-    maxTemp: record.maxTemperature,
-    minTemp: record.minTemperature,
-    currentTemp: record.currentTemperature,
-    mode: record.currentMode,
-    fullDate: new Date(record.recordedAt).toLocaleString(),
-  })) || [];
+  const chartData: ChartDataPoint[] =
+    data?.map((record: Record) => ({
+      time: new Date(record.recordedAt).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        month: 'short',
+        day: 'numeric',
+      }),
+      maxTemp: record.maxTemperature,
+      minTemp: record.minTemperature,
+      currentTemp: record.currentTemperature,
+      mode: record.currentMode,
+      fullDate: new Date(record.recordedAt).toLocaleString(),
+    })) || [];
 
   const modeChangePoints: ModeChangePoint[] = [];
   chartData.forEach((point: ChartDataPoint, index: number) => {
@@ -116,7 +117,7 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
     <Card className="w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <div className='space-y-1'>
+          <div className="space-y-1">
             <CardTitle>{device?.name ?? deviceId}</CardTitle>
             <CardDescription>Temperature over time</CardDescription>
           </div>
