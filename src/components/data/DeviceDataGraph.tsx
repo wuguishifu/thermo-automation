@@ -60,15 +60,7 @@ export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
 
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
 
-  if (isLoading) {
-    return <Spinner />;
-  }
-
-  if (!data || data.length === 0) {
-    return <div>No data available</div>;
-  }
-
-  const chartData: ChartDataPoint[] = data.map((record: Record) => ({
+  const chartData: ChartDataPoint[] = data?.map((record: Record) => ({
     time: new Date(record.recordedAt).toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
@@ -80,7 +72,7 @@ export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
     currentTemp: record.currentTemperature,
     mode: record.currentMode,
     fullDate: new Date(record.recordedAt).toLocaleString(),
-  }));
+  })) || [];
 
   const modeChangePoints: ModeChangePoint[] = [];
   chartData.forEach((point: ChartDataPoint, index: number) => {
@@ -143,94 +135,117 @@ export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer
-          config={{
-            maxTemp: {
-              label: 'Max Temperature',
-              color: 'hsl(var(--destructive))',
-            },
-            minTemp: {
-              label: 'Min Temperature',
-              color: 'hsl(var(--primary))',
-            },
-            currentTemp: {
-              label: 'Current Temperature',
-              color: 'hsl(var(--chart-2))',
-            },
-          }}
-          className="h-[400px] w-full"
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-              <XAxis dataKey="time" className="text-xs" tick={{ fontSize: 12 }} />
-              <YAxis
-                className="text-xs"
-                tick={{ fontSize: 12 }}
-                label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
-                domain={[12, 28]}
-              />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    labelFormatter={(value, payload) => {
-                      if (payload && payload[0]) {
-                        return payload[0].payload.fullDate;
-                      }
-                      return value;
-                    }}
-                  />
-                }
-              />
-              <ReferenceLine x={chartData[0].time}>
-                <Label
-                  value={modeLabels[chartData[0].mode]}
-                  position="insideTopLeft"
-                  style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[400px]">
+            <div className="flex flex-col items-center gap-4">
+              <Spinner />
+              <p className="text-sm text-muted-foreground">Loading temperature data...</p>
+            </div>
+          </div>
+        ) : !data || data.length === 0 ? (
+          <div className="flex items-center justify-center h-[400px]">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="text-4xl text-muted-foreground">📊</div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-medium">No Data Available</h3>
+                <p className="text-sm text-muted-foreground max-w-sm">
+                  No temperature data found for the selected date range. Try adjusting the date or period above.
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <ChartContainer
+            config={{
+              maxTemp: {
+                label: 'Max Temperature',
+                color: 'hsl(var(--destructive))',
+              },
+              minTemp: {
+                label: 'Min Temperature',
+                color: 'hsl(var(--primary))',
+              },
+              currentTemp: {
+                label: 'Current Temperature',
+                color: 'hsl(var(--chart-2))',
+              },
+            }}
+            className="h-[400px] w-full"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                <XAxis dataKey="time" className="text-xs" tick={{ fontSize: 12 }} />
+                <YAxis
+                  className="text-xs"
+                  tick={{ fontSize: 12 }}
+                  label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
+                  domain={[12, 28]}
                 />
-              </ReferenceLine>
-              {modeChangePoints.map((changePoint: ModeChangePoint, index: number) => (
-                <ReferenceLine
-                  key={`mode-change-${index}`}
-                  x={changePoint.x}
-                  stroke="var(--muted-foreground)"
-                  strokeDasharray="5 5"
-                  strokeWidth={1}
-                >
-                  <Label
-                    value={modeLabels[changePoint.mode]}
-                    position="insideTopLeft"
-                    style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
-                  />
-                </ReferenceLine>
-              ))}
-              <Line
-                dot={false}
-                type="monotone"
-                dataKey="maxTemp"
-                stroke="var(--chart-1)"
-                strokeWidth={2}
-                name="Max Temperature"
-              />
-              <Line
-                dot={false}
-                type="monotone"
-                dataKey="minTemp"
-                stroke="var(--chart-3)"
-                strokeWidth={2}
-                name="Min Temperature"
-              />
-              <Line
-                dot={false}
-                type="monotone"
-                dataKey="currentTemp"
-                stroke="var(--chart-2)"
-                strokeWidth={2}
-                name="Current Temperature"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartContainer>
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      labelFormatter={(value, payload) => {
+                        if (payload && payload[0]) {
+                          return payload[0].payload.fullDate;
+                        }
+                        return value;
+                      }}
+                    />
+                  }
+                />
+                {chartData.length > 0 && (
+                  <ReferenceLine x={chartData[0].time}>
+                    <Label
+                      value={modeLabels[chartData[0].mode]}
+                      position="insideTopLeft"
+                      style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+                    />
+                  </ReferenceLine>
+                )}
+                {modeChangePoints.map((changePoint: ModeChangePoint, index: number) => (
+                  <ReferenceLine
+                    key={`mode-change-${index}`}
+                    x={changePoint.x}
+                    stroke="var(--muted-foreground)"
+                    strokeDasharray="5 5"
+                    strokeWidth={1}
+                  >
+                    <Label
+                      value={modeLabels[changePoint.mode]}
+                      position="insideTopLeft"
+                      style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+                    />
+                  </ReferenceLine>
+                ))}
+                <Line
+                  dot={false}
+                  type="monotone"
+                  dataKey="maxTemp"
+                  stroke="var(--chart-1)"
+                  strokeWidth={2}
+                  name="Max Temperature"
+                />
+                <Line
+                  dot={false}
+                  type="monotone"
+                  dataKey="minTemp"
+                  stroke="var(--chart-3)"
+                  strokeWidth={2}
+                  name="Min Temperature"
+                />
+                <Line
+                  dot={false}
+                  type="monotone"
+                  dataKey="currentTemp"
+                  stroke="var(--chart-2)"
+                  strokeWidth={2}
+                  name="Current Temperature"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
