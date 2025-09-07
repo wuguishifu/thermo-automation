@@ -13,7 +13,7 @@ export function GraphDatePicker() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const startDateParam = searchParams.get('startDate');
+  const startDateParam = searchParams.get('start');
   const startDate = startDateParam ? new Date(startDateParam) : subDays(new Date(), 1);
 
   const [open, setOpen] = useState(false);
@@ -21,7 +21,7 @@ export function GraphDatePicker() {
   const handleDateChange = useCallback(
     (newStartDate: Date) => {
       const params = new URLSearchParams(searchParams);
-      params.set('start', newStartDate.toISOString().split('T')[0]);
+      params.set('start', newStartDate.toISOString());
       router.push(`?${params.toString()}`, { scroll: false });
     },
     [router, searchParams],

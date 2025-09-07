@@ -1,7 +1,5 @@
 'use client';
 
-import { subDays } from 'date-fns';
-import { useSearchParams } from 'next/navigation';
 import { CartesianGrid, Label, Line, LineChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 import { GraphDatePicker } from '@/components/data/GraphDatePicker';
@@ -46,18 +44,12 @@ type ModePeriod = {
 
 type DeviceDataGraphProps = {
   deviceId: string;
+  startDate: Date;
+  period: number;
 };
 
-export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
+export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraphProps) {
   const device = useDevice(deviceId);
-  const searchParams = useSearchParams();
-
-  const startDateParam = searchParams.get('start');
-  const periodParam = searchParams.get('period');
-
-  const startDate = startDateParam ? new Date(startDateParam) : subDays(new Date(), 1);
-  const period = periodParam ? parseInt(periodParam, 10) : 2;
-
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
 
   const chartData: ChartDataPoint[] = data?.map((record: Record) => ({

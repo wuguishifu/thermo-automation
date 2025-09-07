@@ -1,22 +1,25 @@
-import { subDays } from 'date-fns';
 import { redirect } from 'next/navigation';
 
 import { DeviceDataGraph } from '@/components/data/DeviceDataGraph';
 import { DeviceDataPageBreadcrumbs } from '@/components/data/DeviceDataPageBreadcrumbs';
 import { PageContent, PageHeader, PageWrapper } from '@/components/layout/PageLayout';
+import { subDays } from 'date-fns';
 
 export default async function DeviceDataPage({
   searchParams,
   params,
-}: {
-  searchParams: Record<string, string>;
+}:{
+  searchParams: Promise<Partial<{ start: string; period: string }>>;
   params: Promise<{ deviceId: string }>;
 }) {
   const { deviceId } = await params;
-  const { start, period } = searchParams;
+  const { start, period } = await searchParams;
 
   if (!start || !period) {
-    return redirect(`/data/${deviceId}?start=${subDays(new Date(), 1).toISOString()}&period=2`);
+    const params = new URLSearchParams();
+    params.set('start', start ?? subDays(new Date(), 1).toISOString());
+    params.set('period', period ?? '2');
+    return redirect(`/data/${deviceId}?${params.toString()}`);
   }
 
   return (
@@ -25,7 +28,7 @@ export default async function DeviceDataPage({
         <DeviceDataPageBreadcrumbs deviceId={deviceId} />
       </PageHeader>
       <PageContent>
-        <DeviceDataGraph deviceId={deviceId} />
+        <DeviceDataGraph deviceId={deviceId} startDate={new Date(start)} period={parseInt(period, 10)} />
       </PageContent>
     </PageWrapper>
   );
