@@ -10,8 +10,11 @@ import { errorHandler } from '@/server/errorHandler';
 const handler = createNextHandler(
   rootRouter.api.data,
   {
-    getDeviceData: async ({ params: { deviceId }, query: { startDate, periodDays = 1 } }) => {
+    getDeviceData: async ({ params: { deviceId }, query: { startDate: startDateISOString, period = 1 } }) => {
       const db = getDb();
+
+      const startDate = new Date(startDateISOString);
+      const endDate = addDays(startDate, period);
 
       const data = await db
         .select()
@@ -19,8 +22,8 @@ const handler = createNextHandler(
         .where(
           and(
             eq(deviceStatusRecordsSchema.deviceId, deviceId),
-            gte(deviceStatusRecordsSchema.recordedAt, new Date(startDate)),
-            lt(deviceStatusRecordsSchema.recordedAt, addDays(new Date(), periodDays)),
+            gte(deviceStatusRecordsSchema.recordedAt, startDate),
+            lt(deviceStatusRecordsSchema.recordedAt, endDate),
           ),
         )
         .orderBy(asc(deviceStatusRecordsSchema.recordedAt));

@@ -1,13 +1,16 @@
 'use client';
 
 import { subDays } from 'date-fns';
-import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { CartesianGrid, Label, Line, LineChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
+import { GraphDatePicker } from '@/components/data/GraphDatePicker';
+import { GraphPeriodPicker } from '@/components/data/GraphPeriodPicker';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Spinner } from '@/components/ui/spinner';
 import { useChartData } from '@/hooks/useChartData';
+import { useDevice } from '@/hooks/useDeviceName';
 import { DeviceInformation } from '@/types/device';
 import { Record } from '@/types/record';
 
@@ -46,10 +49,16 @@ type DeviceDataGraphProps = {
 };
 
 export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
-  const [startDate, setStartDate] = useState(subDays(new Date(), 7));
-  const [periodDays, setPeriodDays] = useState(7);
+  const device = useDevice(deviceId);
+  const searchParams = useSearchParams();
 
-  const { data, isLoading } = useChartData({ deviceId, startDate, periodDays });
+  const startDateParam = searchParams.get('start');
+  const periodParam = searchParams.get('period');
+
+  const startDate = startDateParam ? new Date(startDateParam) : subDays(new Date(), 1);
+  const period = periodParam ? parseInt(periodParam, 10) : 2;
+
+  const { data, isLoading } = useChartData({ deviceId, startDate, period });
 
   if (isLoading) {
     return <Spinner />;
@@ -122,8 +131,16 @@ export function DeviceDataGraph({ deviceId }: DeviceDataGraphProps) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Data</CardTitle>
-        <CardDescription>Whatever Description</CardDescription>
+        <div className="flex items-center justify-between">
+          <div className='space-y-1'>
+            <CardTitle>{device?.name ?? deviceId}</CardTitle>
+            <CardDescription>Temperature over time</CardDescription>
+          </div>
+          <div className="flex items-center gap-4">
+            <GraphDatePicker />
+            <GraphPeriodPicker />
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer

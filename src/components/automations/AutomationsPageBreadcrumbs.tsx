@@ -2,16 +2,11 @@
 
 import { useMemo } from 'react';
 
-import { useListDevicesQuery } from '@/api/devicesApiSlice';
 import { AppBreadcrumbs, Breadcrumb } from '@/components/layout/AppBreadcrumbs';
-import { findDeviceById } from '@/lib/utils/findDeviceById';
+import { useDevice } from '@/hooks/useDeviceName';
 
 export function AutomationsPageBreadcrumbs({ deviceId }: { deviceId: string }) {
-  const { data } = useListDevicesQuery();
-
-  const device = useMemo(() => {
-    return data ? findDeviceById(data, deviceId) : undefined;
-  }, [data, deviceId]);
+  const device = useDevice(deviceId);
 
   const breadcrumbs: Breadcrumb[] = useMemo(() => {
     return [

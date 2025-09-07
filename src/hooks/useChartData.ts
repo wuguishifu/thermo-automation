@@ -6,16 +6,16 @@ import { DEFAULT_POLLING_INTERVAL } from '@/lib/constants';
 type UseChartDataProps = {
   deviceId: string;
   startDate: Date;
-  periodDays: number;
+  period: number;
 };
 
-export function useChartData({ deviceId, startDate, periodDays }: UseChartDataProps) {
+export function useChartData({ deviceId, startDate, period }: UseChartDataProps) {
   const startDateString = useMemo(() => startDate.toISOString(), [startDate]);
 
   const { data, isLoading } = useGetDeviceDataQuery(
     {
       params: { deviceId },
-      query: { startDate: startDateString, periodDays },
+      query: { startDate: startDateString, period },
     },
     {
       pollingInterval: DEFAULT_POLLING_INTERVAL,

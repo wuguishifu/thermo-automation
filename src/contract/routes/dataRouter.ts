@@ -14,7 +14,7 @@ export const dataRouter = c.router(
       }),
       query: z.object({
         startDate: z.string(),
-        periodDays: z.number().optional(),
+        period: z.number().optional(),
       }),
       responses: {
         200: z.array(Record),

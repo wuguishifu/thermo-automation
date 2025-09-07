@@ -1,4 +1,5 @@
 import { createNextHandler } from '@ts-rest/serverless/next';
+import { AxiosResponse } from 'axios';
 import { and, eq, gt, gte, lte, or, sql } from 'drizzle-orm';
 
 import { rootRouter } from '@/contract/rootRouter';
@@ -102,9 +103,6 @@ const handler = createNextHandler(
 
           if ((currentTemperature < targetMin || currentTemperature > targetMax) && mode === Mode.Off) {
             // Device is outside of target range, and is off - turn it on to auto mode
-            console.log(
-              `Turning on device ${deviceId} - current: ${currentTemperature}, target: ${targetMin}-${targetMax}`,
-            );
             return await httpService.put<
               { message: string },
               { mode: number; heatSetpoint: number; coolSetpoint: number }
@@ -120,9 +118,6 @@ const handler = createNextHandler(
             currentTemperature <= targetMax - targets.buffer &&
             mode !== Mode.Off
           ) {
-            console.log(
-              `Turning off device ${deviceId} - current: ${currentTemperature}, target: ${targetMin}-${targetMax}`,
-            );
             // Device is within target range (with buffer), and is not off - turn it off
             return await httpService.put<
               { message: string },
@@ -136,11 +131,10 @@ const handler = createNextHandler(
         }),
       ).then((results) => {
         const fulfilled = results.filter(
-          (result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled',
+          (result): result is PromiseFulfilledResult<AxiosResponse<{ message: string }>> =>
+            result.status === 'fulfilled',
         );
         const rejected = results.filter((result): result is PromiseRejectedResult => result.status === 'rejected');
-        console.log(`Automation results: ${fulfilled.length} successful, ${rejected.length} failed`);
-        console.log(JSON.stringify(rejected, null, 2));
       });
 
       return {

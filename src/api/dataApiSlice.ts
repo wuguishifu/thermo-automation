@@ -21,7 +21,7 @@ export const dataApi = createApi({
       providesTags: (_, __, arg) => [
         {
           type: 'deviceData',
-          id: `${arg.params.deviceId}-${arg.query.startDate}-${arg.query.periodDays}`,
+          id: `${arg.params.deviceId}-${arg.query.startDate}-${arg.query.period}`,
         },
       ],
       queryFn: (data) =>
