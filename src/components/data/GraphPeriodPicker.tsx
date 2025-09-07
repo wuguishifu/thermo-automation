@@ -1,7 +1,6 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function GraphPeriodPicker() {
@@ -21,10 +20,9 @@ export function GraphPeriodPicker() {
   );
 
   return (
-    <Label className="text-sm font-medium flex items-center gap-2">
-      <span>Period:</span>
+    <div className='flex items-center gap-2'>
       <Select value={period.toString()} onValueChange={(value) => handlePeriodChange(parseInt(value))}>
-        <SelectTrigger className="w-[120px]">
+        <SelectTrigger className="w-[120px]" id="period">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -34,6 +32,6 @@ export function GraphPeriodPicker() {
           <SelectItem value="30">30 Days</SelectItem>
         </SelectContent>
       </Select>
-    </Label>
+    </div>
   );
 }

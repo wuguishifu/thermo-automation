@@ -1,4 +1,3 @@
-import { Label } from '@radix-ui/react-label';
 import { addDays, format, subDays } from 'date-fns';
 import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -41,9 +40,6 @@ export function GraphDatePicker() {
 
   return (
     <div className="flex items-center gap-2">
-      <Label className="text-sm font-medium flex items-center gap-2" htmlFor="start-date">
-        <span>Start Date:</span>
-      </Label>
       <div className="flex items-center gap-1">
         <Button variant="outline" size="icon" onClick={handlePreviousDay} className="size-9" title="Previous day">
           <ChevronLeft className="size-4" />

@@ -121,7 +121,7 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
             <CardTitle>{device?.name ?? deviceId}</CardTitle>
             <CardDescription>Temperature over time</CardDescription>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1">
             <GraphDatePicker />
             <GraphPeriodPicker />
           </div>
