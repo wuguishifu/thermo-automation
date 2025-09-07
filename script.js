@@ -1,22 +1,22 @@
-async function doTheThing() {
-  await fetch('http://localhost:3000/api/jobs/statuses', {
-    method: 'POST',
-    headers: {
-      Authorization: 'Bearer password',
-    }
-  });
-
+async function runJobs() {
   await fetch('http://localhost:3000/api/jobs/automation', {
     method: 'POST',
     headers: {
       Authorization: 'Bearer password',
-    }
-  })
+    },
+  });
+
+  await fetch('http://localhost:3000/api/jobs/statuses', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Bearer password',
+    },
+  });
 }
 
 (async () => {
   while (true) {
-    await doTheThing();
+    await runJobs();
     await new Promise((resolve) => setTimeout(resolve, 3 * 60 * 1000));
   }
 })()
