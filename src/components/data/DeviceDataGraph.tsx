@@ -54,7 +54,7 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
 
   const chartData: ChartDataPoint[] =
     data?.map((record: Record) => ({
-      time: new Date(record.recordedAt).toLocaleTimeString('en-US', {
+      time: new Date(record.recordedAtMs).toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         month: 'short',
@@ -64,7 +64,7 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
       minTemp: record.minTemperature,
       currentTemp: record.currentTemperature,
       mode: record.currentMode,
-      fullDate: new Date(record.recordedAt).toLocaleString(),
+      fullDate: new Date(record.recordedAtMs).toLocaleString(),
     })) || [];
 
   const modeChangePoints: ModeChangePoint[] = [];

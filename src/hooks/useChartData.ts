@@ -10,12 +10,12 @@ type UseChartDataProps = {
 };
 
 export function useChartData({ deviceId, startDate, period }: UseChartDataProps) {
-  const startDateString = useMemo(() => startDate.toISOString(), [startDate]);
+  const startDateMs = useMemo(() => startDate.getTime(), [startDate]);
 
   const { data, isLoading } = useGetDeviceDataQuery(
     {
       params: { deviceId },
-      query: { startDate: startDateString, period },
+      query: { startDateMs: startDateMs.toString(), period },
     },
     {
       pollingInterval: DEFAULT_POLLING_INTERVAL,

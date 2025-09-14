@@ -14,7 +14,13 @@ export function GraphDatePicker() {
 
   const startDate = useMemo(() => {
     const startDateParam = searchParams.get('start');
-    return startDateParam ? new Date(startDateParam) : subDays(new Date(), 1);
+    if (startDateParam) {
+      // Parse numeric timestamp and create date at midnight in local timezone
+      const timestamp = parseInt(startDateParam, 10);
+      const date = new Date(timestamp);
+      return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    }
+    return subDays(new Date(), 1);
   }, [searchParams]);
 
   const [open, setOpen] = useState(false);
@@ -22,7 +28,9 @@ export function GraphDatePicker() {
   const handleDateChange = useCallback(
     (newStartDate: Date) => {
       const params = new URLSearchParams(searchParams);
-      params.set('start', newStartDate.toISOString());
+      // Store as numeric timestamp representing midnight in local timezone
+      const localMidnight = new Date(newStartDate.getFullYear(), newStartDate.getMonth(), newStartDate.getDate());
+      params.set('start', localMidnight.getTime().toString());
       router.push(`?${params.toString()}`, { scroll: false });
     },
     [router, searchParams],

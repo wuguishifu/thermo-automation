@@ -1,13 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ClientInferRequest, ClientInferResponseBody } from '@ts-rest/core';
 
 import { apiClient } from '@/api/apiClient';
-import { rootRouter } from '@/contract/rootRouter';
+import { GetDeviceDataPathParams, GetDeviceDataQuery, GetDeviceDataResponse } from '@/contract/routes/dataRouter';
 
-type DataRouter<T extends keyof typeof rootRouter.api.data> = (typeof rootRouter.api.data)[T];
-
-type GetDeviceDataResponse = ClientInferResponseBody<DataRouter<'getDeviceData'>>;
-type GetDeviceDataPathParams = ClientInferRequest<DataRouter<'getDeviceData'>>;
+type GetDeviceDataParams = {
+  params: GetDeviceDataPathParams;
+  query: GetDeviceDataQuery;
+};
 
 export const dataApi = createApi({
   reducerPath: 'dataApi',
@@ -16,12 +15,12 @@ export const dataApi = createApi({
   }),
   tagTypes: ['deviceData'],
   endpoints: (builder) => ({
-    getDeviceData: builder.query<GetDeviceDataResponse, GetDeviceDataPathParams>({
+    getDeviceData: builder.query<GetDeviceDataResponse, GetDeviceDataParams>({
       keepUnusedDataFor: 180,
       providesTags: (_, __, arg) => [
         {
           type: 'deviceData',
-          id: `${arg.params.deviceId}-${arg.query.startDate}-${arg.query.period}`,
+          id: `${arg.params.deviceId}-${arg.query.startDateMs}-${arg.query.period}`,
         },
       ],
       queryFn: (data) =>

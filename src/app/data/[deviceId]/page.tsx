@@ -1,4 +1,3 @@
-import { subDays } from 'date-fns';
 import { redirect } from 'next/navigation';
 
 import { DeviceDataGraph } from '@/components/data/DeviceDataGraph';
@@ -17,8 +16,10 @@ export default async function DeviceDataPage({
 
   if (!start || !period) {
     const params = new URLSearchParams();
-    params.set('start', start ?? subDays(new Date(), 1).toISOString());
-    params.set('period', period ?? '2');
+    const defaultDate = new Date();
+    const localMidnight = new Date(defaultDate.getFullYear(), defaultDate.getMonth(), defaultDate.getDate());
+    params.set('start', start ?? localMidnight.getTime().toString());
+    params.set('period', period ?? '1');
     return redirect(`/data/${deviceId}?${params.toString()}`);
   }
 
@@ -28,7 +29,7 @@ export default async function DeviceDataPage({
         <DeviceDataPageBreadcrumbs deviceId={deviceId} />
       </PageHeader>
       <PageContent>
-        <DeviceDataGraph deviceId={deviceId} startDate={new Date(start)} period={parseInt(period, 10)} />
+        <DeviceDataGraph deviceId={deviceId} startDate={new Date(parseInt(start, 10))} period={parseInt(period, 10)} />
       </PageContent>
     </PageWrapper>
   );

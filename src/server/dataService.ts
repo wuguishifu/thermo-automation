@@ -19,6 +19,7 @@ class DataService {
     ).then((results) => {
       return results.filter(filterFulfilled).map((result) => ({
         deviceId: result.value.deviceId,
+        recordedAtMs: Date.now(),
         maxTemperature: result.value.data.coolSetpoint,
         minTemperature: result.value.data.heatSetpoint,
         currentTemperature: result.value.data.tempIndoor,
@@ -33,12 +34,12 @@ class DataService {
 
   public async getHistoricalData({
     deviceId,
-    startDate,
-    endDate,
+    startDateMs,
+    endDateMs,
   }: {
     deviceId: string;
-    startDate: Date;
-    endDate: Date;
+    startDateMs: number;
+    endDateMs: number;
   }) {
     const db = getDb();
     return await db
@@ -47,11 +48,11 @@ class DataService {
       .where(
         and(
           eq(deviceStatusRecordsSchema.deviceId, deviceId),
-          gte(deviceStatusRecordsSchema.recordedAt, startDate),
-          lt(deviceStatusRecordsSchema.recordedAt, endDate),
+          gte(deviceStatusRecordsSchema.recordedAtMs, startDateMs),
+          lt(deviceStatusRecordsSchema.recordedAtMs, endDateMs),
         ),
       )
-      .orderBy(asc(deviceStatusRecordsSchema.recordedAt));
+      .orderBy(asc(deviceStatusRecordsSchema.recordedAtMs));
   }
 }
 

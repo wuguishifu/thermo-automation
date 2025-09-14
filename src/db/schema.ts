@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, real, serial, text, time, timestamp } from 'drizzle-orm/pg-core';
+import { bigint, boolean, integer, pgTable, real, serial, text, time, timestamp } from 'drizzle-orm/pg-core';
 
 export const automationsSchema = pgTable('automations', {
   id: serial('id').primaryKey(),
@@ -15,7 +15,7 @@ export const automationsSchema = pgTable('automations', {
 export const deviceStatusRecordsSchema = pgTable('device_status_records', {
   id: serial('id').primaryKey(),
   deviceId: text('device_id').notNull(),
-  recordedAt: timestamp('recorded_at', { withTimezone: true }).defaultNow().notNull(),
+  recordedAtMs: bigint('recorded_at_ms', { mode: 'number' }).notNull(),
   maxTemperature: real('max_temperature').notNull(),
   minTemperature: real('min_temperature').notNull(),
   currentTemperature: real('current_temperature').notNull(),

@@ -3,7 +3,7 @@ import z from 'zod';
 export const Record = z.object({
   id: z.number(),
   deviceId: z.string(),
-  recordedAt: z.date(),
+  recordedAtMs: z.number(),
   maxTemperature: z.number(),
   minTemperature: z.number(),
   currentTemperature: z.number(),
