@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "cron": "API_BASE_URL=http://localhost:3000 API_KEY=password node ./script.js",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "next lint",
