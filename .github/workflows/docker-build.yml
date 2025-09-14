@@ -1,4 +1,4 @@
-name: Build and Publish Docker Image
+name: Build and Publish Docker Images
 
 on:
   push:
@@ -30,11 +30,32 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push main application image
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: ./Dockerfile
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.event.inputs.version || github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push migration image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.migration
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}-migration:latest
+            ghcr.io/${{ github.repository }}-migration:${{ github.event.inputs.version || github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deployment summary
+        run: |
+          echo "🚀 Docker images built and pushed successfully!"
+          echo "📦 Main app image: ghcr.io/${{ github.repository }}:${{ github.event.inputs.version || github.ref_name }}"
+          echo "🔄 Migration image: ghcr.io/${{ github.repository }}-migration:${{ github.event.inputs.version || github.ref_name }}"
