@@ -182,7 +182,11 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
                 <YAxis
                   className="text-xs"
                   tick={{ fontSize: 12 }}
-                  label={{ value: `Temperature (${getTemperatureUnitSymbol(temperatureDisplay)})`, angle: -90, position: 'insideLeft' }}
+                  label={{
+                    value: `Temperature (${getTemperatureUnitSymbol(temperatureDisplay)})`,
+                    angle: -90,
+                    position: 'insideLeft',
+                  }}
                   domain={temperatureDisplay === 'Fahrenheit' ? [53.6, 82.4] : [12, 28]}
                 />
                 <ChartTooltip

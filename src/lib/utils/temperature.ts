@@ -67,7 +67,7 @@ export function getTemperatureUnitSymbol(displayUnit: 'Fahrenheit' | 'Celsius'):
 /**
  * Format temperature with appropriate precision and unit
  */
-export function formatTemperature(celsiusValue: number, displayUnit: 'Fahrenheit' | 'Celsius', precision: number = 1): string {
+export function formatTemperature(celsiusValue: number, displayUnit: 'Fahrenheit' | 'Celsius', precision = 1): string {
   const convertedValue = convertTemperature(celsiusValue, displayUnit);
   const unit = getTemperatureUnitSymbol(displayUnit);
   return `${convertedValue.toFixed(precision)}${unit}`;

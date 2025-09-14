@@ -9,7 +9,7 @@ const handler = createNextHandler(
   {
     getDeviceData: async ({ params: { deviceId }, query: { startDateMs, period = 1 } }) => {
       const startDateMsNum = parseInt(startDateMs, 10);
-      const endDateMs = startDateMsNum + (period * 24 * 60 * 60 * 1000); // Add days in milliseconds
+      const endDateMs = startDateMsNum + period * 24 * 60 * 60 * 1000; // Add days in milliseconds
 
       const data = await dataService.getHistoricalData({ deviceId, startDateMs: startDateMsNum, endDateMs });
       return { status: 200, body: data };

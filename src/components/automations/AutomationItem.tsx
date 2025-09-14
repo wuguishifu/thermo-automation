@@ -36,7 +36,10 @@ export function AutomationItem({ automation, device }: { automation: Automation;
           {automation.minTemperature ? <Temperature celsiusValue={automation.minTemperature} /> : 'No min'} -{' '}
           {automation.maxTemperature ? <Temperature celsiusValue={automation.maxTemperature} /> : 'No max'}
         </p>
-        <p>Buffer: {automation.bufferDegrees ? formatTemperature(automation.bufferDegrees, temperatureDisplay) : 'No buffer'}</p>
+        <p>
+          Buffer:{' '}
+          {automation.bufferDegrees ? formatTemperature(automation.bufferDegrees, temperatureDisplay) : 'No buffer'}
+        </p>
       </CardContent>
     </Card>
   );

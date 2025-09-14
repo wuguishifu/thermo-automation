@@ -14,7 +14,11 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { useDevices } from '@/hooks/useDevices';
-import { convertNonLocalizedTemperature, convertTemperatureForStorage, getTemperatureUnitSymbol } from '@/lib/utils/temperature';
+import {
+  convertNonLocalizedTemperature,
+  convertTemperatureForStorage,
+  getTemperatureUnitSymbol,
+} from '@/lib/utils/temperature';
 import { useAppSelector } from '@/state/store';
 
 const formSchema = z.object({
@@ -76,8 +80,12 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
       // Convert temperatures from display units to Celsius for storage
       const submitValues = {
         ...values,
-        maxTemperature: values.maxTemperature ? convertTemperatureForStorage(values.maxTemperature, temperatureDisplay) : undefined,
-        minTemperature: values.minTemperature ? convertTemperatureForStorage(values.minTemperature, temperatureDisplay) : undefined,
+        maxTemperature: values.maxTemperature
+          ? convertTemperatureForStorage(values.maxTemperature, temperatureDisplay)
+          : undefined,
+        minTemperature: values.minTemperature
+          ? convertTemperatureForStorage(values.minTemperature, temperatureDisplay)
+          : undefined,
         bufferDegrees: convertNonLocalizedTemperature(values.bufferDegrees, temperatureDisplay),
       };
 
@@ -200,7 +208,11 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Buffer Degrees ({getTemperatureUnitSymbol(temperatureDisplay)})</FormLabel>
-                    <FormDescription>The temperature buffer range for the automation. Min 1{getTemperatureUnitSymbol(temperatureDisplay)}, max 5{getTemperatureUnitSymbol(temperatureDisplay)}</FormDescription>
+                    <FormDescription>
+                      The temperature buffer range for the automation. Min 1
+                      {getTemperatureUnitSymbol(temperatureDisplay)}, max 5
+                      {getTemperatureUnitSymbol(temperatureDisplay)}
+                    </FormDescription>
                     <FormControl>
                       <Input
                         type="number"
