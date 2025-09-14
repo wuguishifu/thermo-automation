@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { CreateAutomationDialog } from '@/components/automations/CreateAutomationDialog';
 import { NavigationItem } from '@/components/menus/NavigationItem';
+import { TemperatureToggle } from '@/components/menus/TemperatureToggle';
 import { ThemeToggle } from '@/components/menus/ThemeToggle';
 import {
   Sidebar,
@@ -80,6 +81,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <ThemeToggle />
+          <TemperatureToggle />
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="https://github.com/wuguishifu/thermo-automation" target="_blank">

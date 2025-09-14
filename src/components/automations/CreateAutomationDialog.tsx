@@ -14,6 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { useDevices } from '@/hooks/useDevices';
+import { convertNonLocalizedTemperature, convertTemperatureForStorage, getTemperatureUnitSymbol } from '@/lib/utils/temperature';
+import { useAppSelector } from '@/state/store';
 
 const formSchema = z.object({
   deviceId: z.string(),
@@ -31,6 +33,7 @@ type Props = { children: React.ReactNode; asChild?: boolean };
 
 export function CreateAutomationDialog({ children, asChild }: Props) {
   const { devices, isLoading: devicesLoading } = useDevices();
+  const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
 
   const [open, setOpen] = useState(false);
 
@@ -70,11 +73,19 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
         return;
       }
 
-      createAutomation(values)
+      // Convert temperatures from display units to Celsius for storage
+      const submitValues = {
+        ...values,
+        maxTemperature: values.maxTemperature ? convertTemperatureForStorage(values.maxTemperature, temperatureDisplay) : undefined,
+        minTemperature: values.minTemperature ? convertTemperatureForStorage(values.minTemperature, temperatureDisplay) : undefined,
+        bufferDegrees: convertNonLocalizedTemperature(values.bufferDegrees, temperatureDisplay),
+      };
+
+      createAutomation(submitValues)
         .unwrap()
         .then(() => setOpen(false));
     },
-    [createAutomation, isLoading],
+    [createAutomation, isLoading, temperatureDisplay],
   );
 
   const handleOpenChange = useCallback(
@@ -150,7 +161,7 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
                 name="maxTemperature"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Max Temperature (°C)</FormLabel>
+                    <FormLabel>Max Temperature ({getTemperatureUnitSymbol(temperatureDisplay)})</FormLabel>
                     <FormDescription>Maximum temperature threshold (optional)</FormDescription>
                     <FormControl>
                       <Input
@@ -169,7 +180,7 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
                 name="minTemperature"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Min Temperature (°C)</FormLabel>
+                    <FormLabel>Min Temperature ({getTemperatureUnitSymbol(temperatureDisplay)})</FormLabel>
                     <FormDescription>Minimum temperature threshold (optional)</FormDescription>
                     <FormControl>
                       <Input
@@ -188,13 +199,13 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
                 name="bufferDegrees"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Buffer Degrees</FormLabel>
-                    <FormDescription>The temperature buffer range for the automation. Min 1°C, max 5°C</FormDescription>
+                    <FormLabel>Buffer Degrees ({getTemperatureUnitSymbol(temperatureDisplay)})</FormLabel>
+                    <FormDescription>The temperature buffer range for the automation. Min 1{getTemperatureUnitSymbol(temperatureDisplay)}, max 5{getTemperatureUnitSymbol(temperatureDisplay)}</FormDescription>
                     <FormControl>
                       <Input
                         type="number"
-                        min={1}
-                        max={5}
+                        min={temperatureDisplay === 'Fahrenheit' ? 1.8 : 1}
+                        max={temperatureDisplay === 'Fahrenheit' ? 9 : 5}
                         step={0.1}
                         value={field.value}
                         onChange={(e) => field.onChange(Number(e.target.value))}

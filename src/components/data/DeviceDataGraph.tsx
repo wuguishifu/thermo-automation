@@ -9,6 +9,8 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { Spinner } from '@/components/ui/spinner';
 import { useChartData } from '@/hooks/useChartData';
 import { useDevice } from '@/hooks/useDeviceName';
+import { convertTemperature, formatTemperature, getTemperatureUnitSymbol } from '@/lib/utils/temperature';
+import { useAppSelector } from '@/state/store';
 import { DeviceInformation } from '@/types/device';
 import { Record } from '@/types/record';
 
@@ -27,6 +29,9 @@ type ChartDataPoint = {
   currentTemp: number;
   mode: number;
   fullDate: string;
+  maxTempCelsius: number;
+  minTempCelsius: number;
+  currentTempCelsius: number;
 };
 
 type ModeChangePoint = {
@@ -51,6 +56,7 @@ type DeviceDataGraphProps = {
 export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraphProps) {
   const device = useDevice(deviceId);
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
+  const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
 
   const chartData: ChartDataPoint[] =
     data?.map((record: Record) => ({
@@ -60,11 +66,15 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
         month: 'short',
         day: 'numeric',
       }),
-      maxTemp: record.maxTemperature,
-      minTemp: record.minTemperature,
-      currentTemp: record.currentTemperature,
+      maxTemp: convertTemperature(record.maxTemperature, temperatureDisplay),
+      minTemp: convertTemperature(record.minTemperature, temperatureDisplay),
+      currentTemp: convertTemperature(record.currentTemperature, temperatureDisplay),
       mode: record.currentMode,
       fullDate: new Date(record.recordedAtMs).toLocaleString(),
+      // Store original Celsius values for proper formatting
+      maxTempCelsius: record.maxTemperature,
+      minTempCelsius: record.minTemperature,
+      currentTempCelsius: record.currentTemperature,
     })) || [];
 
   const modeChangePoints: ModeChangePoint[] = [];
@@ -172,8 +182,8 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
                 <YAxis
                   className="text-xs"
                   tick={{ fontSize: 12 }}
-                  label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
-                  domain={[12, 28]}
+                  label={{ value: `Temperature (${getTemperatureUnitSymbol(temperatureDisplay)})`, angle: -90, position: 'insideLeft' }}
+                  domain={temperatureDisplay === 'Fahrenheit' ? [53.6, 82.4] : [12, 28]}
                 />
                 <ChartTooltip
                   content={
@@ -183,6 +193,21 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
                           return payload[0].payload.fullDate;
                         }
                         return value;
+                      }}
+                      formatter={(value, name, props) => {
+                        if (typeof value === 'number' && typeof name === 'string' && props?.payload) {
+                          // Format temperature values with proper precision using original Celsius values
+                          if (name === 'Max Temperature') {
+                            return [formatTemperature(props.payload.maxTempCelsius, temperatureDisplay), name];
+                          }
+                          if (name === 'Min Temperature') {
+                            return [formatTemperature(props.payload.minTempCelsius, temperatureDisplay), name];
+                          }
+                          if (name === 'Current Temperature') {
+                            return [formatTemperature(props.payload.currentTempCelsius, temperatureDisplay), name];
+                          }
+                        }
+                        return [value, name];
                       }}
                     />
                   }

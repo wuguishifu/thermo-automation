@@ -5,10 +5,14 @@ import { AutomationItemOptions } from '@/components/automations/AutomationItemOp
 import { Temperature } from '@/components/devices/Temperature';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { formatTemperature } from '@/lib/utils/temperature';
+import { useAppSelector } from '@/state/store';
 import { Automation } from '@/types/automation';
 import { Device } from '@/types/device';
 
 export function AutomationItem({ automation, device }: { automation: Automation; device?: Device }) {
+  const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
+
   return (
     <Card className="p-4">
       <CardTitle className={cn('flex items-center justify-between', { 'opacity-50': !automation.enabled })}>
@@ -32,7 +36,7 @@ export function AutomationItem({ automation, device }: { automation: Automation;
           {automation.minTemperature ? <Temperature celsiusValue={automation.minTemperature} /> : 'No min'} -{' '}
           {automation.maxTemperature ? <Temperature celsiusValue={automation.maxTemperature} /> : 'No max'}
         </p>
-        <p>Buffer: {automation.bufferDegrees ? `${automation.bufferDegrees}°C` : 'No buffer'}</p>
+        <p>Buffer: {automation.bufferDegrees ? formatTemperature(automation.bufferDegrees, temperatureDisplay) : 'No buffer'}</p>
       </CardContent>
     </Card>
   );
