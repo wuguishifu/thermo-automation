@@ -9,9 +9,9 @@ This is a self-hostable project to automate Daikin thermometers.
 ## TODO
 
 - [ ] Shimmer in the breadcrumb for device name
-- [ ] Move cron into separate service in the Dockerfile
-  - [ ] Start cron service when running `pnpm dev` (?)
-- [ ] Fix the classic timezone issue 🙄
+- [ ] ~~Move cron into separate service in the Dockerfile~~
+  - [ ] ~~Start cron service when running `pnpm dev` (?)~~
+- [x] Fix the classic timezone issue 🙄
 - [ ] Add a temporary override option with: setpoints, optional buffer (1 or 2?), optional duration (selection or input?)
-- [ ] Fix temperature display settings to actually honor °F
+- [x] Fix temperature display settings to actually honor °F
 - [x] Make thermostat turn off when there are no automations or locks
