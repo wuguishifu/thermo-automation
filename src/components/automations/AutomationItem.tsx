@@ -5,7 +5,7 @@ import { AutomationItemOptions } from '@/components/automations/AutomationItemOp
 import { Temperature } from '@/components/devices/Temperature';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { formatTemperature } from '@/lib/utils/temperature';
+import { formatNonLocalizedTemperature } from '@/lib/utils/temperature';
 import { useAppSelector } from '@/state/store';
 import { Automation } from '@/types/automation';
 import { Device } from '@/types/device';
@@ -38,7 +38,9 @@ export function AutomationItem({ automation, device }: { automation: Automation;
         </p>
         <p>
           Buffer:{' '}
-          {automation.bufferDegrees ? formatTemperature(automation.bufferDegrees, temperatureDisplay) : 'No buffer'}
+          {automation.bufferDegrees
+            ? formatNonLocalizedTemperature(automation.bufferDegrees, temperatureDisplay)
+            : 'No buffer'}
         </p>
       </CardContent>
     </Card>

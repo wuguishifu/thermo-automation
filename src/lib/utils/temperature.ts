@@ -3,6 +3,8 @@
  * All internal data is stored in Celsius, these utilities handle conversion for display
  */
 
+type TemperatureUnit = 'Fahrenheit' | 'Celsius';
+
 /**
  * Convert Celsius to Fahrenheit
  */
@@ -23,7 +25,7 @@ export function fahrenheitToCelsius(fahrenheit: number): number {
  * @param displayUnit - Display unit preference
  * @returns Temperature in the requested unit
  */
-export function convertTemperature(celsiusValue: number, displayUnit: 'Fahrenheit' | 'Celsius'): number {
+export function convertTemperature(celsiusValue: number, displayUnit: TemperatureUnit): number {
   if (displayUnit === 'Fahrenheit') {
     return celsiusToFahrenheit(celsiusValue);
   }
@@ -36,7 +38,7 @@ export function convertTemperature(celsiusValue: number, displayUnit: 'Fahrenhei
  * @param displayUnit - Display unit preference
  * @returns Temperature in Celsius (for storage)
  */
-export function convertTemperatureForStorage(displayValue: number, displayUnit: 'Fahrenheit' | 'Celsius'): number {
+export function convertTemperatureForStorage(displayValue: number, displayUnit: TemperatureUnit): number {
   if (displayUnit === 'Fahrenheit') {
     return fahrenheitToCelsius(displayValue);
   }
@@ -44,12 +46,13 @@ export function convertTemperatureForStorage(displayValue: number, displayUnit: 
 }
 
 /**
+ * TODO: this is bad naming and the input/output is wrong/confusing
  * Convert temperature for non-localized display
  * @param displayValue - Temperature in display unit
  * @param displayUnit - Display unit preference
  * @returns Temperature in the requested unit
  */
-export function convertNonLocalizedTemperature(displayValue: number, displayUnit: 'Fahrenheit' | 'Celsius'): number {
+export function convertNonLocalizedTemperature(displayValue: number, displayUnit: TemperatureUnit): number {
   if (displayUnit === 'Fahrenheit') {
     // We don't subtract 32 here because we're not displaying an actual temperature
     return displayValue / 1.8;
@@ -60,15 +63,28 @@ export function convertNonLocalizedTemperature(displayValue: number, displayUnit
 /**
  * Get temperature unit symbol
  */
-export function getTemperatureUnitSymbol(displayUnit: 'Fahrenheit' | 'Celsius'): string {
+export function getTemperatureUnitSymbol(displayUnit: TemperatureUnit): string {
   return displayUnit === 'Fahrenheit' ? '°F' : '°C';
 }
 
 /**
  * Format temperature with appropriate precision and unit
  */
-export function formatTemperature(celsiusValue: number, displayUnit: 'Fahrenheit' | 'Celsius', precision = 1): string {
+export function formatTemperature(celsiusValue: number, displayUnit: TemperatureUnit, precision = 1): string {
   const convertedValue = convertTemperature(celsiusValue, displayUnit);
+  const unit = getTemperatureUnitSymbol(displayUnit);
+  return `${convertedValue.toFixed(precision)}${unit}`;
+}
+
+/**
+ * Format temperature for non-localized display
+ */
+export function formatNonLocalizedTemperature(
+  celsiusValue: number,
+  displayUnit: TemperatureUnit,
+  precision = 1,
+): string {
+  const convertedValue = displayUnit === 'Fahrenheit' ? celsiusValue * 1.8 : celsiusValue;
   const unit = getTemperatureUnitSymbol(displayUnit);
   return `${convertedValue.toFixed(precision)}${unit}`;
 }

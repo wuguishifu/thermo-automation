@@ -6,12 +6,8 @@ This is a self-hostable project to automate Daikin thermometers.
 
 [Daikin One API Documentation](https://www.daikinone.com/openapi/documentation/index.html)
 
-## TODO
+![Device information](./.github/images/device.png)
 
-- [ ] Shimmer in the breadcrumb for device name
-- [ ] ~~Move cron into separate service in the Dockerfile~~
-  - [ ] ~~Start cron service when running `pnpm dev` (?)~~
-- [x] Fix the classic timezone issue 🙄
-- [ ] Add a temporary override option with: setpoints, optional buffer (1 or 2?), optional duration (selection or input?)
-- [x] Fix temperature display settings to actually honor °F
-- [x] Make thermostat turn off when there are no automations or locks
+![Automations](./.github/images/automations.png)
+
+![Data Tracking](./.github/images/data.png)
