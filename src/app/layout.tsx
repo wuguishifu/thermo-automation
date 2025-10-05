@@ -29,7 +29,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookiesStore = await cookies();
-  const defaultOpen = cookiesStore.get('sidebar_state')?.value === 'true';
+  const defaultOpen = cookiesStore.get('sidebar_state')?.value !== 'false';
 
   return (
     <html lang="en" suppressHydrationWarning>
