@@ -487,7 +487,10 @@ export function DeviceDataGraph({
                 <div className="flex flex-col gap-1">
                   {([0, 1, 2, 3, 4] as DeviceInformation['mode'][]).map((mode) => (
                     <div key={mode} className="flex items-center gap-2 text-xs">
-                      <span className="inline-block h-2.5 w-2.5 rounded" style={{ backgroundColor: modeStrokes[mode] }} />
+                      <span
+                        className="inline-block h-2.5 w-2.5 rounded"
+                        style={{ backgroundColor: modeStrokes[mode] }}
+                      />
                       <span className="text-foreground/90">{modeLabels[mode]}</span>
                     </div>
                   ))}
