@@ -79,6 +79,7 @@ type DeviceDataGraphProps = {
   period: number;
   showLabels: boolean;
   showModeChangeLines: boolean;
+  showLegend: boolean;
 };
 
 export function DeviceDataGraph({
@@ -87,6 +88,7 @@ export function DeviceDataGraph({
   period,
   showLabels: defaultShowLabels,
   showModeChangeLines: defaultShowModeChangeLines,
+  showLegend: defaultShowLegend,
 }: DeviceDataGraphProps) {
   const device = useDevice(deviceId);
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
@@ -101,6 +103,7 @@ export function DeviceDataGraph({
   const [refAreaLeft, setRefAreaLeft] = useState<number | null>(null);
   const [refAreaRight, setRefAreaRight] = useState<number | null>(null);
   const [showModeChangeLines, setShowModeChangeLines] = useState(defaultShowModeChangeLines);
+  const [showLegend, setShowLegend] = useState(defaultShowLegend);
 
   useEffect(() => {
     function handleMouseMove(e: MouseEvent) {
@@ -454,45 +457,60 @@ export function DeviceDataGraph({
               </ResponsiveContainer>
             </ChartContainer>
 
-            <div
-              ref={legendRef}
-              className="absolute bg-background/90 backdrop-blur border rounded-md shadow-sm p-2 select-none cursor-move"
-              style={
-                legendPosition.x === null || legendPosition.y === null
-                  ? { top: 8, right: 33 }
-                  : { top: legendPosition.y, left: legendPosition.x }
-              }
-              onMouseDown={(e) => {
-                if (!containerRef.current || !legendRef.current) {
-                  return;
+            {showLegend && (
+              <div
+                ref={legendRef}
+                className="absolute bg-background/90 backdrop-blur border rounded-md shadow-sm p-2 select-none cursor-move"
+                style={
+                  legendPosition.x === null || legendPosition.y === null
+                    ? { top: 8, right: 33 }
+                    : { top: legendPosition.y, left: legendPosition.x }
                 }
-                const containerRect = containerRef.current.getBoundingClientRect();
-                const legendRect = legendRef.current.getBoundingClientRect();
-                setIsDragging(true);
-                dragOffsetRef.current = {
-                  x: e.clientX - legendRect.left,
-                  y: e.clientY - legendRect.top,
-                };
-                setLegendPosition({
-                  x: legendRect.left - containerRect.left,
-                  y: legendRect.top - containerRect.top,
-                });
-              }}
-            >
-              <div className="text-xs font-medium text-muted-foreground mb-1">Modes</div>
-              <div className="flex flex-col gap-1">
-                {([0, 1, 2, 3, 4] as DeviceInformation['mode'][]).map((mode) => (
-                  <div key={mode} className="flex items-center gap-2 text-xs">
-                    <span className="inline-block h-2.5 w-2.5 rounded" style={{ backgroundColor: modeStrokes[mode] }} />
-                    <span className="text-foreground/90">{modeLabels[mode]}</span>
-                  </div>
-                ))}
+                onMouseDown={(e) => {
+                  if (!containerRef.current || !legendRef.current) {
+                    return;
+                  }
+                  const containerRect = containerRef.current.getBoundingClientRect();
+                  const legendRect = legendRef.current.getBoundingClientRect();
+                  setIsDragging(true);
+                  dragOffsetRef.current = {
+                    x: e.clientX - legendRect.left,
+                    y: e.clientY - legendRect.top,
+                  };
+                  setLegendPosition({
+                    x: legendRect.left - containerRect.left,
+                    y: legendRect.top - containerRect.top,
+                  });
+                }}
+              >
+                <div className="text-xs font-medium text-muted-foreground mb-1">Modes</div>
+                <div className="flex flex-col gap-1">
+                  {([0, 1, 2, 3, 4] as DeviceInformation['mode'][]).map((mode) => (
+                    <div key={mode} className="flex items-center gap-2 text-xs">
+                      <span className="inline-block h-2.5 w-2.5 rounded" style={{ backgroundColor: modeStrokes[mode] }} />
+                      <span className="text-foreground/90">{modeLabels[mode]}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </CardContent>
       <CardFooter className="flex flex-col items-end gap-2">
+        <LabelUI htmlFor="show-legend">
+          <span className="text-sm font-medium leading-none cursor-pointer">Show Legend</span>
+          <Checkbox
+            id="show-legend"
+            aria-label="Toggle legend"
+            checked={showLegend}
+            onCheckedChange={(value) => {
+              const next = !!value;
+              setShowLegend(next);
+              document.cookie = `show_legend=${next ? 'true' : 'false'}; path=/; max-age=${60 * 60 * 24 * 7}`;
+            }}
+          />
+        </LabelUI>
         <LabelUI htmlFor="show-labels">
           <span className="text-sm font-medium leading-none cursor-pointer">Show Mode Labels</span>
           <Checkbox
