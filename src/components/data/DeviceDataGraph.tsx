@@ -43,6 +43,8 @@ type ChartDataPoint = {
   maxTempCelsius: number;
   minTempCelsius: number;
   currentTempCelsius: number;
+  isModeChange?: boolean;
+  prevMode?: number;
 };
 
 type ModeChangePoint = {
@@ -128,6 +130,18 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
       minTempCelsius: record.minTemperature,
       currentTempCelsius: record.currentTemperature,
     })) || [];
+
+  // Mark points where a mode change occurs for tooltip context
+  chartData.forEach((point: ChartDataPoint, index: number) => {
+    if (index === 0) {
+      return;
+    }
+    const prevPoint = chartData[index - 1];
+    if (prevPoint.mode !== point.mode) {
+      point.isModeChange = true;
+      point.prevMode = prevPoint.mode;
+    }
+  });
 
   const modeChangePoints: ModeChangePoint[] = [];
   chartData.forEach((point: ChartDataPoint, index: number) => {
@@ -246,25 +260,43 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                     content={
                       <ChartTooltipContent
                         labelFormatter={(value, payload) => {
-                          if (payload && payload[0]) {
-                            return payload[0].payload.fullDate;
+                          const p = payload && payload[0] ? payload[0].payload : undefined;
+                          const baseLabel = p?.fullDate ?? value;
+
+                          if (p?.isModeChange) {
+                            const fromLabel = p?.prevMode !== undefined ? modeLabels[p.prevMode as DeviceInformation['mode']] : undefined;
+                            const toLabel = modeLabels[p.mode as DeviceInformation['mode']];
+                            return (
+                              <div className="flex flex-col">
+                                <span>{baseLabel}</span>
+                                <span className="text-muted-foreground">{`Mode changed: ${fromLabel ?? ''} → ${toLabel}`}</span>
+                              </div>
+                            );
                           }
-                          return value;
+
+                          const label = p?.mode !== undefined ? modeLabels[p.mode as DeviceInformation['mode']] : 'unknown';
+
+                          return (
+                            <div className="flex flex-col">
+                              <span>{baseLabel}</span>
+                              <span className="text-muted-foreground">{`Mode: ${label}`}</span>
+                            </div>
+                          );
                         }}
                         formatter={(value, name, props) => {
                           if (typeof value === 'number' && typeof name === 'string' && props?.payload) {
                             // Format temperature values with proper precision using original Celsius values
                             if (name === 'Max Temperature') {
-                              return [formatTemperature(props.payload.maxTempCelsius, temperatureDisplay), name];
+                              return `Max: ${formatTemperature(props.payload.maxTempCelsius, temperatureDisplay)}`;
                             }
                             if (name === 'Min Temperature') {
-                              return [formatTemperature(props.payload.minTempCelsius, temperatureDisplay), name];
+                              return `Min: ${formatTemperature(props.payload.minTempCelsius, temperatureDisplay)}`;
                             }
                             if (name === 'Current Temperature') {
-                              return [formatTemperature(props.payload.currentTempCelsius, temperatureDisplay), name];
+                              return `Current: ${formatTemperature(props.payload.currentTempCelsius, temperatureDisplay)}`;
                             }
                           }
-                          return [value, name];
+                          return `${name}: ${value}`;
                         }}
                       />
                     }
@@ -325,7 +357,6 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
               </ResponsiveContainer>
             </ChartContainer>
 
-            {!showLabels && (
               <div
                 ref={legendRef}
                 className="absolute bg-background/90 backdrop-blur border rounded-md shadow-sm p-2 select-none cursor-move"
@@ -364,7 +395,6 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                   ))}
                 </div>
               </div>
-            )}
           </div>
         )}
       </CardContent>

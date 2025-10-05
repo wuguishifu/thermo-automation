@@ -13,7 +13,7 @@ export default async function DeviceDataPage({
   params: Promise<{ deviceId: string }>;
 }) {
   const cookiesStore = await cookies();
-  const showLabels = cookiesStore.get('show_labels')?.value !== 'false';
+  const showLabels = cookiesStore.get('show_labels')?.value === 'true';
 
   const { deviceId } = await params;
   const { start, period } = await searchParams;
