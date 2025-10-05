@@ -5,7 +5,6 @@ import {
   useDisableAutomationMutation,
   useEnableAutomationMutation,
 } from '@/api/automationsApiSlice';
-import { EditAutomationDialog } from './EditAutomationDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +15,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Automation } from '@/types/automation';
+
+import { EditAutomationDialog } from './EditAutomationDialog';
 
 type AutomationItemOptionsProps = {
   children: React.ReactNode;

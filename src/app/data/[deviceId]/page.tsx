@@ -1,9 +1,9 @@
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { DeviceDataGraph } from '@/components/data/DeviceDataGraph';
 import { DeviceDataPageBreadcrumbs } from '@/components/data/DeviceDataPageBreadcrumbs';
 import { PageContent, PageHeader, PageWrapper } from '@/components/layout/PageLayout';
-import { cookies } from 'next/headers';
 
 export default async function DeviceDataPage({
   searchParams,
@@ -33,7 +33,12 @@ export default async function DeviceDataPage({
         <DeviceDataPageBreadcrumbs deviceId={deviceId} />
       </PageHeader>
       <PageContent>
-        <DeviceDataGraph deviceId={deviceId} startDate={new Date(parseInt(start, 10))} period={parseInt(period, 10)} showLabels={showLabels} />
+        <DeviceDataGraph
+          deviceId={deviceId}
+          startDate={new Date(parseInt(start, 10))}
+          period={parseInt(period, 10)}
+          showLabels={showLabels}
+        />
       </PageContent>
     </PageWrapper>
   );

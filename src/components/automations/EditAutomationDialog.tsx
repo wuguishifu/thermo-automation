@@ -23,14 +23,20 @@ import { Automation } from '@/types/automation';
 
 function to24Hour(value: string): string {
   const match = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-  if (!match) return value;
+  if (!match) {
+    return value;
+  }
   let hours = parseInt(match[1], 10);
   const minutes = match[2];
   const ampm = match[3].toUpperCase();
   if (ampm === 'AM') {
-    if (hours === 12) hours = 0;
+    if (hours === 12) {
+      hours = 0;
+    }
   } else if (ampm === 'PM') {
-    if (hours !== 12) hours += 12;
+    if (hours !== 12) {
+      hours += 12;
+    }
   }
   const hh = String(hours).padStart(2, '0');
   return `${hh}:${minutes}`;
@@ -76,7 +82,9 @@ export function EditAutomationDialog({ open, onOpenChange, automation }: Props) 
   });
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      return;
+    }
     form.reset({
       id: automation.id,
       deviceId: automation.deviceId,
@@ -100,7 +108,9 @@ export function EditAutomationDialog({ open, onOpenChange, automation }: Props) 
 
   const handleSubmit = useCallback(
     (values: FormSchema) => {
-      if (isLoading) return;
+      if (isLoading) {
+        return;
+      }
 
       const submitValues = {
         id: automation.id,
@@ -226,8 +236,8 @@ export function EditAutomationDialog({ open, onOpenChange, automation }: Props) 
                 <FormItem>
                   <FormLabel>Buffer Degrees ({getTemperatureUnitSymbol(temperatureDisplay)})</FormLabel>
                   <FormDescription>
-                    The temperature buffer range for the automation. Min 1{getTemperatureUnitSymbol(temperatureDisplay)}, max
-                    5{getTemperatureUnitSymbol(temperatureDisplay)}
+                    The temperature buffer range for the automation. Min 1{getTemperatureUnitSymbol(temperatureDisplay)}
+                    , max 5{getTemperatureUnitSymbol(temperatureDisplay)}
                   </FormDescription>
                   <FormControl>
                     <Input
@@ -256,5 +266,3 @@ export function EditAutomationDialog({ open, onOpenChange, automation }: Props) 
     </Dialog>
   );
 }
-
-

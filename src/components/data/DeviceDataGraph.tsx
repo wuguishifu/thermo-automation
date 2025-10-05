@@ -7,9 +7,9 @@ import { GraphDatePicker } from '@/components/data/GraphDatePicker';
 import { GraphPeriodPicker } from '@/components/data/GraphPeriodPicker';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { Spinner } from '@/components/ui/spinner';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label as LabelUI } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 import { useChartData } from '@/hooks/useChartData';
 import { useDevice } from '@/hooks/useDeviceName';
 import { convertTemperature, formatTemperature, getTemperatureUnitSymbol } from '@/lib/utils/temperature';
@@ -78,24 +78,28 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
 
   useEffect(() => {
     function handleMouseMove(e: MouseEvent) {
-      if (!isDragging || !containerRef.current) return;
+      if (!isDragging || !containerRef.current) {
+        return;
+      }
       const rect = containerRef.current.getBoundingClientRect();
       const legendRect = legendRef.current?.getBoundingClientRect();
       const legendWidth = legendRect?.width ?? 0;
       const legendHeight = legendRect?.height ?? 0;
       const nextX = Math.min(
         Math.max(e.clientX - rect.left - dragOffsetRef.current.x, 0),
-        Math.max(rect.width - legendWidth, 0)
+        Math.max(rect.width - legendWidth, 0),
       );
       const nextY = Math.min(
         Math.max(e.clientY - rect.top - dragOffsetRef.current.y, 0),
-        Math.max(rect.height - legendHeight, 0)
+        Math.max(rect.height - legendHeight, 0),
       );
       setLegendPosition({ x: nextX, y: nextY });
     }
 
     function handleMouseUp() {
-      if (isDragging) setIsDragging(false);
+      if (isDragging) {
+        setIsDragging(false);
+      }
     }
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -226,97 +230,97 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
             >
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="time" className="text-xs" tick={{ fontSize: 12 }} />
-                <YAxis
-                  className="text-xs"
-                  tick={{ fontSize: 12 }}
-                  label={{
-                    value: `Temperature (${getTemperatureUnitSymbol(temperatureDisplay)})`,
-                    angle: -90,
-                    position: 'insideLeft',
-                  }}
-                  domain={temperatureDisplay === 'Fahrenheit' ? [53.6, 82.4] : [12, 28]}
-                />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent
-                      labelFormatter={(value, payload) => {
-                        if (payload && payload[0]) {
-                          return payload[0].payload.fullDate;
-                        }
-                        return value;
-                      }}
-                      formatter={(value, name, props) => {
-                        if (typeof value === 'number' && typeof name === 'string' && props?.payload) {
-                          // Format temperature values with proper precision using original Celsius values
-                          if (name === 'Max Temperature') {
-                            return [formatTemperature(props.payload.maxTempCelsius, temperatureDisplay), name];
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="time" className="text-xs" tick={{ fontSize: 12 }} />
+                  <YAxis
+                    className="text-xs"
+                    tick={{ fontSize: 12 }}
+                    label={{
+                      value: `Temperature (${getTemperatureUnitSymbol(temperatureDisplay)})`,
+                      angle: -90,
+                      position: 'insideLeft',
+                    }}
+                    domain={temperatureDisplay === 'Fahrenheit' ? [53.6, 82.4] : [12, 28]}
+                  />
+                  <ChartTooltip
+                    content={
+                      <ChartTooltipContent
+                        labelFormatter={(value, payload) => {
+                          if (payload && payload[0]) {
+                            return payload[0].payload.fullDate;
                           }
-                          if (name === 'Min Temperature') {
-                            return [formatTemperature(props.payload.minTempCelsius, temperatureDisplay), name];
+                          return value;
+                        }}
+                        formatter={(value, name, props) => {
+                          if (typeof value === 'number' && typeof name === 'string' && props?.payload) {
+                            // Format temperature values with proper precision using original Celsius values
+                            if (name === 'Max Temperature') {
+                              return [formatTemperature(props.payload.maxTempCelsius, temperatureDisplay), name];
+                            }
+                            if (name === 'Min Temperature') {
+                              return [formatTemperature(props.payload.minTempCelsius, temperatureDisplay), name];
+                            }
+                            if (name === 'Current Temperature') {
+                              return [formatTemperature(props.payload.currentTempCelsius, temperatureDisplay), name];
+                            }
                           }
-                          if (name === 'Current Temperature') {
-                            return [formatTemperature(props.payload.currentTempCelsius, temperatureDisplay), name];
-                          }
-                        }
-                        return [value, name];
-                      }}
-                    />
-                  }
-                />
-                {chartData.length > 0 && (
-                  <ReferenceLine x={chartData[0].time} stroke={modeStrokes[chartData[0].mode]} strokeWidth={1}>
-                    {showLabels && (
-                      <Label
-                        value={modeLabels[chartData[0].mode]}
-                        position="insideTopLeft"
-                        style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+                          return [value, name];
+                        }}
                       />
-                    )}
-                  </ReferenceLine>
-                )}
-                {modeChangePoints.map((changePoint: ModeChangePoint, index: number) => (
-                  <ReferenceLine
-                    key={`mode-change-${index}`}
-                    x={changePoint.x}
-                    stroke={modeStrokes[changePoint.mode]}
-                    strokeDasharray="5 5"
-                    strokeWidth={1}
-                  >
-                    {showLabels && (
-                      <Label
-                        value={modeLabels[changePoint.mode]}
-                        position="insideTopLeft"
-                        style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
-                      />
-                    )}
-                  </ReferenceLine>
-                ))}
-                <Line
-                  dot={false}
-                  type="monotone"
-                  dataKey="maxTemp"
-                  stroke="var(--chart-1)"
-                  strokeWidth={2}
-                  name="Max Temperature"
-                />
-                <Line
-                  dot={false}
-                  type="monotone"
-                  dataKey="minTemp"
-                  stroke="var(--chart-3)"
-                  strokeWidth={2}
-                  name="Min Temperature"
-                />
-                <Line
-                  dot={false}
-                  type="monotone"
-                  dataKey="currentTemp"
-                  stroke="var(--chart-2)"
-                  strokeWidth={2}
-                  name="Current Temperature"
-                />
+                    }
+                  />
+                  {chartData.length > 0 && (
+                    <ReferenceLine x={chartData[0].time} stroke={modeStrokes[chartData[0].mode]} strokeWidth={1}>
+                      {showLabels && (
+                        <Label
+                          value={modeLabels[chartData[0].mode]}
+                          position="insideTopLeft"
+                          style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+                        />
+                      )}
+                    </ReferenceLine>
+                  )}
+                  {modeChangePoints.map((changePoint: ModeChangePoint, index: number) => (
+                    <ReferenceLine
+                      key={`mode-change-${index}`}
+                      x={changePoint.x}
+                      stroke={modeStrokes[changePoint.mode]}
+                      strokeDasharray="5 5"
+                      strokeWidth={1}
+                    >
+                      {showLabels && (
+                        <Label
+                          value={modeLabels[changePoint.mode]}
+                          position="insideTopLeft"
+                          style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+                        />
+                      )}
+                    </ReferenceLine>
+                  ))}
+                  <Line
+                    dot={false}
+                    type="monotone"
+                    dataKey="maxTemp"
+                    stroke="var(--chart-1)"
+                    strokeWidth={2}
+                    name="Max Temperature"
+                  />
+                  <Line
+                    dot={false}
+                    type="monotone"
+                    dataKey="minTemp"
+                    stroke="var(--chart-3)"
+                    strokeWidth={2}
+                    name="Min Temperature"
+                  />
+                  <Line
+                    dot={false}
+                    type="monotone"
+                    dataKey="currentTemp"
+                    stroke="var(--chart-2)"
+                    strokeWidth={2}
+                    name="Current Temperature"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -330,26 +334,24 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                     ? { top: 8, right: 8 }
                     : { top: legendPosition.y, left: legendPosition.x }
                 }
-                  onMouseDown={(e) => {
-                    if (!containerRef.current || !legendRef.current) return;
-                    const containerRect = containerRef.current.getBoundingClientRect();
-                    const legendRect = legendRef.current.getBoundingClientRect();
-                    setIsDragging(true);
-                    dragOffsetRef.current = {
-                      x: e.clientX - legendRect.left,
-                      y: e.clientY - legendRect.top,
-                    };
-                    setLegendPosition({
-                      x: legendRect.left - containerRect.left,
-                      y: legendRect.top - containerRect.top,
-                    });
-                  }}
+                onMouseDown={(e) => {
+                  if (!containerRef.current || !legendRef.current) {
+                    return;
+                  }
+                  const containerRect = containerRef.current.getBoundingClientRect();
+                  const legendRect = legendRef.current.getBoundingClientRect();
+                  setIsDragging(true);
+                  dragOffsetRef.current = {
+                    x: e.clientX - legendRect.left,
+                    y: e.clientY - legendRect.top,
+                  };
+                  setLegendPosition({
+                    x: legendRect.left - containerRect.left,
+                    y: legendRect.top - containerRect.top,
+                  });
+                }}
               >
-                <div
-                  className="text-xs font-medium text-muted-foreground mb-1"
-                >
-                  Modes
-                </div>
+                <div className="text-xs font-medium text-muted-foreground mb-1">Modes</div>
                 <div className="flex flex-col gap-1">
                   {([0, 1, 2, 3, 4] as DeviceInformation['mode'][]).map((mode) => (
                     <div key={mode} className="flex items-center gap-2 text-xs">
@@ -367,21 +369,19 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
         )}
       </CardContent>
       <CardFooter className="flex flex-col items-end">
-          <LabelUI htmlFor="show-labels">
-            <span className="text-sm font-medium leading-none cursor-pointer">
-            Show Mode Labels
-            </span>
-            <Checkbox
-              id="show-labels"
-              aria-label="Toggle labels"
-              checked={showLabels}
-              onCheckedChange={(value) => {
-                const next = !!value;
-                setShowLabels(next);
-                document.cookie = `show_labels=${next}; path=/; max-age=${60 * 60 * 24 * 7}`;
-              }}
-            />
-          </LabelUI>
+        <LabelUI htmlFor="show-labels">
+          <span className="text-sm font-medium leading-none cursor-pointer">Show Mode Labels</span>
+          <Checkbox
+            id="show-labels"
+            aria-label="Toggle labels"
+            checked={showLabels}
+            onCheckedChange={(value) => {
+              const next = !!value;
+              setShowLabels(next);
+              document.cookie = `show_labels=${next}; path=/; max-age=${60 * 60 * 24 * 7}`;
+            }}
+          />
+        </LabelUI>
       </CardFooter>
     </Card>
   );
