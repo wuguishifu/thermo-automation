@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CartesianGrid, Label, Line, LineChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 import { GraphDatePicker } from '@/components/data/GraphDatePicker';
@@ -27,10 +27,10 @@ const modeLabels: { [key in DeviceInformation['mode']]: string } = {
 
 const modeStrokes: { [key in DeviceInformation['mode']]: string } = {
   0: 'var(--muted-foreground)',
-  1: 'var(--chart-1)', // align with Max Temperature (typically red)
-  2: 'var(--chart-3)', // align with Min Temperature (typically blue)
-  3: 'var(--chart-2)',
-  4: 'var(--chart-5)',
+  1: 'var(--chart-1-muted)',
+  2: 'var(--chart-3-muted)',
+  3: 'var(--chart-2-muted)',
+  4: 'var(--chart-5-muted)',
 };
 
 type ChartDataPoint = {
@@ -70,6 +70,41 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
   const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
   const [showLabels, setShowLabels] = useState(defaultShowLabels);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const legendRef = useRef<HTMLDivElement | null>(null);
+  const [legendPosition, setLegendPosition] = useState<{ x: number | null; y: number | null }>({ x: null, y: null });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragOffsetRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  useEffect(() => {
+    function handleMouseMove(e: MouseEvent) {
+      if (!isDragging || !containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const legendRect = legendRef.current?.getBoundingClientRect();
+      const legendWidth = legendRect?.width ?? 0;
+      const legendHeight = legendRect?.height ?? 0;
+      const nextX = Math.min(
+        Math.max(e.clientX - rect.left - dragOffsetRef.current.x, 0),
+        Math.max(rect.width - legendWidth, 0)
+      );
+      const nextY = Math.min(
+        Math.max(e.clientY - rect.top - dragOffsetRef.current.y, 0),
+        Math.max(rect.height - legendHeight, 0)
+      );
+      setLegendPosition({ x: nextX, y: nextY });
+    }
+
+    function handleMouseUp() {
+      if (isDragging) setIsDragging(false);
+    }
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
 
   const chartData: ChartDataPoint[] =
     data?.map((record: Record) => ({
@@ -171,25 +206,26 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
             </div>
           </div>
         ) : (
-          <ChartContainer
-            config={{
-              maxTemp: {
-                label: 'Max Temperature',
-                color: 'hsl(var(--destructive))',
-              },
-              minTemp: {
-                label: 'Min Temperature',
-                color: 'hsl(var(--primary))',
-              },
-              currentTemp: {
-                label: 'Current Temperature',
-                color: 'hsl(var(--chart-2))',
-              },
-            }}
-            className="h-[400px] w-full"
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <div ref={containerRef} className="relative">
+            <ChartContainer
+              config={{
+                maxTemp: {
+                  label: 'Max Temperature',
+                  color: 'hsl(var(--destructive))',
+                },
+                minTemp: {
+                  label: 'Min Temperature',
+                  color: 'hsl(var(--primary))',
+                },
+                currentTemp: {
+                  label: 'Current Temperature',
+                  color: 'hsl(var(--chart-2))',
+                },
+              }}
+              className="h-[400px] w-full"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis dataKey="time" className="text-xs" tick={{ fontSize: 12 }} />
                 <YAxis
@@ -281,9 +317,53 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                   strokeWidth={2}
                   name="Current Temperature"
                 />
-              </LineChart>
-            </ResponsiveContainer>
-          </ChartContainer>
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+
+            {!showLabels && (
+              <div
+                ref={legendRef}
+                className="absolute bg-background/90 backdrop-blur border rounded-md shadow-sm p-2 select-none cursor-move"
+                style={
+                  legendPosition.x === null || legendPosition.y === null
+                    ? { top: 8, right: 8 }
+                    : { top: legendPosition.y, left: legendPosition.x }
+                }
+                  onMouseDown={(e) => {
+                    if (!containerRef.current || !legendRef.current) return;
+                    const containerRect = containerRef.current.getBoundingClientRect();
+                    const legendRect = legendRef.current.getBoundingClientRect();
+                    setIsDragging(true);
+                    dragOffsetRef.current = {
+                      x: e.clientX - legendRect.left,
+                      y: e.clientY - legendRect.top,
+                    };
+                    setLegendPosition({
+                      x: legendRect.left - containerRect.left,
+                      y: legendRect.top - containerRect.top,
+                    });
+                  }}
+              >
+                <div
+                  className="text-xs font-medium text-muted-foreground mb-1"
+                >
+                  Modes
+                </div>
+                <div className="flex flex-col gap-1">
+                  {([0, 1, 2, 3, 4] as DeviceInformation['mode'][]).map((mode) => (
+                    <div key={mode} className="flex items-center gap-2 text-xs">
+                      <span
+                        className="inline-block h-2.5 w-2.5 rounded"
+                        style={{ backgroundColor: modeStrokes[mode] }}
+                      />
+                      <span className="text-foreground/90">{modeLabels[mode]}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         )}
       </CardContent>
       <CardFooter className="flex flex-col items-end">
