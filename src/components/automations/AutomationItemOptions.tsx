@@ -1,10 +1,11 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import {
   useDeleteAutomationMutation,
   useDisableAutomationMutation,
   useEnableAutomationMutation,
 } from '@/api/automationsApiSlice';
+import { EditAutomationDialog } from './EditAutomationDialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +24,7 @@ type AutomationItemOptionsProps = {
 };
 
 export function AutomationItemOptions({ children, automation, asChild }: AutomationItemOptionsProps) {
+  const [editOpen, setEditOpen] = useState(false);
   const [deleteAutomation, { isLoading }] = useDeleteAutomationMutation();
   const [enableMutation, { isLoading: isEnabling }] = useEnableAutomationMutation();
   const [disableMutation, { isLoading: isDisabling }] = useDisableAutomationMutation();
@@ -52,22 +54,28 @@ export function AutomationItemOptions({ children, automation, asChild }: Automat
   }, [disableMutation, isDisabling, automation.id]);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild={asChild} className="cursor-pointer">
-        {children}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuGroup>
-          <DropdownMenuLabel>Options</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer" onSelect={automation.enabled ? handleDisabled : handleEnabled}>
-            <span>{automation.enabled ? 'Disable' : 'Enable'} Automation</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer" onSelect={handleDelete}>
-            <span className="text-destructive">Delete</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild={asChild} className="cursor-pointer">
+          {children}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Options</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="cursor-pointer" onSelect={() => setEditOpen(true)}>
+              <span>Edit</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onSelect={automation.enabled ? handleDisabled : handleEnabled}>
+              <span>{automation.enabled ? 'Disable' : 'Enable'} Automation</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer" onSelect={handleDelete}>
+              <span className="text-destructive">Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <EditAutomationDialog open={editOpen} onOpenChange={setEditOpen} automation={automation} />
+    </>
   );
 }

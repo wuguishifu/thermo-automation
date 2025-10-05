@@ -16,6 +16,7 @@ const handler = createNextHandler(
           id: schema.automations.id,
           deviceId: schema.automations.deviceId,
           createdAt: schema.automations.createdAt,
+          updatedAt: schema.automations.updatedAt,
           startsAt: sql<string>`to_char(${schema.automations.startsAt}::time, 'HH12:MI AM')`,
           endsAt: sql<string>`to_char(${schema.automations.endsAt}::time, 'HH12:MI AM')`,
           maxTemperature: schema.automations.maxTemperature,
@@ -29,6 +30,33 @@ const handler = createNextHandler(
       return {
         status: 200,
         body: automations,
+      };
+    },
+    updateAutomation: async ({ body }) => {
+      const db = getDb();
+      const { id, ...rest } = body;
+      const [automation] = await db
+        .update(schema.automations)
+        .set({
+          ...rest,
+          updatedAt: sql`now()`,
+        })
+        .where(eq(schema.automations.id, id))
+        .returning({
+          id: schema.automations.id,
+          deviceId: schema.automations.deviceId,
+          createdAt: schema.automations.createdAt,
+          updatedAt: schema.automations.updatedAt,
+          startsAt: sql<string>`to_char(${schema.automations.startsAt}::time, 'HH24:MI')`,
+          endsAt: sql<string>`to_char(${schema.automations.endsAt}::time, 'HH24:MI')`,
+          maxTemperature: schema.automations.maxTemperature,
+          minTemperature: schema.automations.minTemperature,
+          bufferDegrees: schema.automations.bufferDegrees,
+          enabled: schema.automations.enabled,
+        });
+      return {
+        status: 200,
+        body: automation,
       };
     },
     createAutomation: async ({ body }) => {

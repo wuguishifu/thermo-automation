@@ -4,6 +4,7 @@ export const automationsSchema = pgTable('automations', {
   id: serial('id').primaryKey(),
   deviceId: text('device_id').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   startsAt: time('starts_at', { withTimezone: true }).notNull(),
   endsAt: time('ends_at', { withTimezone: true }).notNull(),
   maxTemperature: real('max_temperature'),

@@ -27,7 +27,7 @@ const formSchema = z.object({
   endsAt: z.string().min(1, 'End time is required'),
   maxTemperature: z.number().optional(),
   minTemperature: z.number().optional(),
-  bufferDegrees: z.number().min(1).max(5),
+  bufferDegrees: z.number().min(0.5).max(5),
   wraps: z.boolean(),
 });
 
@@ -216,8 +216,8 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
                     <FormControl>
                       <Input
                         type="number"
-                        min={temperatureDisplay === 'Fahrenheit' ? 1.8 : 1}
-                        max={temperatureDisplay === 'Fahrenheit' ? 9 : 5}
+                        min={temperatureDisplay === 'Fahrenheit' ? 1 : 0.5}
+                        max={temperatureDisplay === 'Fahrenheit' ? 10 : 5}
                         step={0.1}
                         value={field.value}
                         onChange={(e) => field.onChange(Number(e.target.value))}

@@ -16,6 +16,23 @@ export const automationsRouter = c.router(
         200: z.array(Automation),
       },
     },
+    updateAutomation: {
+      summary: 'Update an automation',
+      method: 'POST',
+      path: '/update',
+      body: z.object({
+        id: z.number(),
+        deviceId: z.string().optional(),
+        startsAt: z.string().optional(),
+        endsAt: z.string().optional(),
+        maxTemperature: z.number().optional().nullable(),
+        minTemperature: z.number().optional().nullable(),
+        bufferDegrees: z.number().optional(),
+      }),
+      responses: {
+        200: Automation,
+      },
+    },
     createAutomation: {
       summary: 'Create an automation',
       method: 'POST',

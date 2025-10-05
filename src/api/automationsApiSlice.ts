@@ -22,6 +22,9 @@ type EnableAutomationBody = ClientInferRequest<AutomationsRouter<'enableAutomati
 type DisableAutomationResponse = ClientInferResponseBody<AutomationsRouter<'disableAutomation'>>;
 type DisableAutomationBody = ClientInferRequest<AutomationsRouter<'disableAutomation'>>['body'];
 
+type UpdateAutomationResponse = ClientInferResponseBody<AutomationsRouter<'updateAutomation'>>;
+type UpdateAutomationBody = ClientInferRequest<AutomationsRouter<'updateAutomation'>>['body'];
+
 export const automationsApi = createApi({
   reducerPath: 'automationsApi',
   baseQuery: fetchBaseQuery({
@@ -94,6 +97,19 @@ export const automationsApi = createApi({
           throw new Error('Failed to disable automation');
         }),
     }),
+    updateAutomation: builder.mutation<UpdateAutomationResponse, UpdateAutomationBody>({
+      invalidatesTags: ['automations'],
+      queryFn: (body) =>
+        apiClient.api.automations.updateAutomation({ body }).then((response) => {
+          if (response.status === 200) {
+            toast.success('Automation updated successfully');
+            return { data: response.body };
+          }
+
+          toast.error('Failed to update automation');
+          throw new Error('Failed to update automation');
+        }),
+    }),
   }),
 });
 
@@ -103,4 +119,5 @@ export const {
   useDeleteAutomationMutation,
   useEnableAutomationMutation,
   useDisableAutomationMutation,
+  useUpdateAutomationMutation,
 } = automationsApi;

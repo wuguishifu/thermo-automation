@@ -27,6 +27,7 @@ export function AutomationItem({ automation, device }: { automation: Automation;
           <ExternalLink size={16} />
         </Link>
         <p>Created: {new Date(automation.createdAt).toLocaleString()}</p>
+        <p>Updated: {new Date(automation.updatedAt).toLocaleString()}</p>
       </CardDescription>
       <CardContent className={cn('p-0', { 'opacity-50': !automation.enabled })}>
         <p>
