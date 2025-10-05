@@ -420,7 +420,7 @@ export function DeviceDataGraph({
                     dot={false}
                     type="monotone"
                     dataKey="maxTemp"
-                    stroke="var(--chart-1)"
+                    stroke="var(--chart-3)"
                     strokeWidth={2}
                     name="Max Temperature"
                   />
@@ -429,7 +429,7 @@ export function DeviceDataGraph({
                     dot={false}
                     type="monotone"
                     dataKey="minTemp"
-                    stroke="var(--chart-3)"
+                    stroke="var(--chart-1)"
                     strokeWidth={2}
                     name="Min Temperature"
                   />
