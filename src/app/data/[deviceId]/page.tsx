@@ -14,6 +14,7 @@ export default async function DeviceDataPage({
 }) {
   const cookiesStore = await cookies();
   const showLabels = cookiesStore.get('show_labels')?.value === 'true';
+  const showModeChangeLines = cookiesStore.get('show_mode_lines')?.value !== 'false';
 
   const { deviceId } = await params;
   const { start, period } = await searchParams;
@@ -38,6 +39,7 @@ export default async function DeviceDataPage({
           startDate={new Date(parseInt(start, 10))}
           period={parseInt(period, 10)}
           showLabels={showLabels}
+          showModeChangeLines={showModeChangeLines}
         />
       </PageContent>
     </PageWrapper>
