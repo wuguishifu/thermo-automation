@@ -331,7 +331,7 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                 className="absolute bg-background/90 backdrop-blur border rounded-md shadow-sm p-2 select-none cursor-move"
                 style={
                   legendPosition.x === null || legendPosition.y === null
-                    ? { top: 8, right: 8 }
+                    ? { top: 8, right: 33 }
                     : { top: legendPosition.y, left: legendPosition.x }
                 }
                 onMouseDown={(e) => {
