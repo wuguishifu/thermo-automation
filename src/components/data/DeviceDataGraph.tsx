@@ -1,10 +1,22 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { CartesianGrid, Label, Line, LineChart, ReferenceArea, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import {
+  CartesianGrid,
+  Label,
+  Line,
+  LineChart,
+  ReferenceArea,
+  ReferenceLine,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { CategoricalChartState } from 'recharts/types/chart/types';
 
 import { GraphDatePicker } from '@/components/data/GraphDatePicker';
 import { GraphPeriodPicker } from '@/components/data/GraphPeriodPicker';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -16,7 +28,6 @@ import { convertTemperature, formatTemperature, getTemperatureUnitSymbol } from 
 import { useAppSelector } from '@/state/store';
 import { DeviceInformation } from '@/types/device';
 import { Record } from '@/types/record';
-import { Button } from '@/components/ui/button';
 
 const modeLabels: { [key in DeviceInformation['mode']]: string } = {
   0: 'Off',
@@ -70,7 +81,13 @@ type DeviceDataGraphProps = {
   showModeChangeLines: boolean;
 };
 
-export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defaultShowLabels, showModeChangeLines: defaultShowModeChangeLines }: DeviceDataGraphProps) {
+export function DeviceDataGraph({
+  deviceId,
+  startDate,
+  period,
+  showLabels: defaultShowLabels,
+  showModeChangeLines: defaultShowModeChangeLines,
+}: DeviceDataGraphProps) {
   const device = useDevice(deviceId);
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
   const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
@@ -213,11 +230,11 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  setXDomain(undefined)
-                  setRefAreaLeft(null)
-                  setRefAreaRight(null)
+                  setXDomain(undefined);
+                  setRefAreaLeft(null);
+                  setRefAreaRight(null);
                 }}
-                className='h-9'
+                className="h-9"
               >
                 Reset zoom
               </Button>
@@ -273,20 +290,21 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                     setRefAreaLeft(null);
                     setRefAreaRight(null);
                   }}
-                  onMouseDown={(e: any) => {
-                    if (e && typeof e.activeLabel === 'number') {
-                      setRefAreaLeft(e.activeLabel);
+                  onMouseDown={(nextState: CategoricalChartState) => {
+                    if (nextState && typeof nextState.activeLabel === 'number') {
+                      setRefAreaLeft(nextState.activeLabel);
                       setRefAreaRight(null);
                     }
                   }}
-                  onMouseMove={(e: any) => {
-                    if (refAreaLeft !== null && e && typeof e.activeLabel === 'number') {
-                      setRefAreaRight(e.activeLabel);
+                  onMouseMove={(nextState: CategoricalChartState) => {
+                    if (refAreaLeft !== null && nextState && typeof nextState.activeLabel === 'number') {
+                      setRefAreaRight(nextState.activeLabel);
                     }
                   }}
                   onMouseUp={() => {
                     if (refAreaLeft !== null && refAreaRight !== null && refAreaLeft !== refAreaRight) {
-                      const [start, end] = refAreaLeft < refAreaRight ? [refAreaLeft, refAreaRight] : [refAreaRight, refAreaLeft];
+                      const [start, end] =
+                        refAreaLeft < refAreaRight ? [refAreaLeft, refAreaRight] : [refAreaRight, refAreaLeft];
                       setXDomain([start, end]);
                     }
                     setRefAreaLeft(null);
@@ -327,7 +345,10 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                           const baseLabel = p?.fullDate ?? value;
 
                           if (p?.isModeChange) {
-                            const fromLabel = p?.prevMode !== undefined ? modeLabels[p.prevMode as DeviceInformation['mode']] : undefined;
+                            const fromLabel =
+                              p?.prevMode !== undefined
+                                ? modeLabels[p.prevMode as DeviceInformation['mode']]
+                                : undefined;
                             const toLabel = modeLabels[p.mode as DeviceInformation['mode']];
                             return (
                               <div className="flex flex-col">
@@ -337,7 +358,8 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                             );
                           }
 
-                          const label = p?.mode !== undefined ? modeLabels[p.mode as DeviceInformation['mode']] : 'unknown';
+                          const label =
+                            p?.mode !== undefined ? modeLabels[p.mode as DeviceInformation['mode']] : 'unknown';
 
                           return (
                             <div className="flex flex-col">
@@ -394,7 +416,7 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
                       </ReferenceLine>
                     ))}
                   <Line
-                  isAnimationActive={false}
+                    isAnimationActive={false}
                     dot={false}
                     type="monotone"
                     dataKey="maxTemp"
@@ -432,44 +454,41 @@ export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defau
               </ResponsiveContainer>
             </ChartContainer>
 
-              <div
-                ref={legendRef}
-                className="absolute bg-background/90 backdrop-blur border rounded-md shadow-sm p-2 select-none cursor-move"
-                style={
-                  legendPosition.x === null || legendPosition.y === null
-                    ? { top: 8, right: 33 }
-                    : { top: legendPosition.y, left: legendPosition.x }
+            <div
+              ref={legendRef}
+              className="absolute bg-background/90 backdrop-blur border rounded-md shadow-sm p-2 select-none cursor-move"
+              style={
+                legendPosition.x === null || legendPosition.y === null
+                  ? { top: 8, right: 33 }
+                  : { top: legendPosition.y, left: legendPosition.x }
+              }
+              onMouseDown={(e) => {
+                if (!containerRef.current || !legendRef.current) {
+                  return;
                 }
-                onMouseDown={(e) => {
-                  if (!containerRef.current || !legendRef.current) {
-                    return;
-                  }
-                  const containerRect = containerRef.current.getBoundingClientRect();
-                  const legendRect = legendRef.current.getBoundingClientRect();
-                  setIsDragging(true);
-                  dragOffsetRef.current = {
-                    x: e.clientX - legendRect.left,
-                    y: e.clientY - legendRect.top,
-                  };
-                  setLegendPosition({
-                    x: legendRect.left - containerRect.left,
-                    y: legendRect.top - containerRect.top,
-                  });
-                }}
-              >
-                <div className="text-xs font-medium text-muted-foreground mb-1">Modes</div>
-                <div className="flex flex-col gap-1">
-                  {([0, 1, 2, 3, 4] as DeviceInformation['mode'][]).map((mode) => (
-                    <div key={mode} className="flex items-center gap-2 text-xs">
-                      <span
-                        className="inline-block h-2.5 w-2.5 rounded"
-                        style={{ backgroundColor: modeStrokes[mode] }}
-                      />
-                      <span className="text-foreground/90">{modeLabels[mode]}</span>
-                    </div>
-                  ))}
-                </div>
+                const containerRect = containerRef.current.getBoundingClientRect();
+                const legendRect = legendRef.current.getBoundingClientRect();
+                setIsDragging(true);
+                dragOffsetRef.current = {
+                  x: e.clientX - legendRect.left,
+                  y: e.clientY - legendRect.top,
+                };
+                setLegendPosition({
+                  x: legendRect.left - containerRect.left,
+                  y: legendRect.top - containerRect.top,
+                });
+              }}
+            >
+              <div className="text-xs font-medium text-muted-foreground mb-1">Modes</div>
+              <div className="flex flex-col gap-1">
+                {([0, 1, 2, 3, 4] as DeviceInformation['mode'][]).map((mode) => (
+                  <div key={mode} className="flex items-center gap-2 text-xs">
+                    <span className="inline-block h-2.5 w-2.5 rounded" style={{ backgroundColor: modeStrokes[mode] }} />
+                    <span className="text-foreground/90">{modeLabels[mode]}</span>
+                  </div>
+                ))}
               </div>
+            </div>
           </div>
         )}
       </CardContent>
