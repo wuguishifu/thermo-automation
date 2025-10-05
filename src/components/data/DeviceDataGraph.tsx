@@ -1,12 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { CartesianGrid, Label, Line, LineChart, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 
 import { GraphDatePicker } from '@/components/data/GraphDatePicker';
 import { GraphPeriodPicker } from '@/components/data/GraphPeriodPicker';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Spinner } from '@/components/ui/spinner';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label as LabelUI } from '@/components/ui/label';
 import { useChartData } from '@/hooks/useChartData';
 import { useDevice } from '@/hooks/useDeviceName';
 import { convertTemperature, formatTemperature, getTemperatureUnitSymbol } from '@/lib/utils/temperature';
@@ -20,6 +23,14 @@ const modeLabels: { [key in DeviceInformation['mode']]: string } = {
   2: 'Cooling',
   3: 'Auto',
   4: 'Emergency Heat',
+};
+
+const modeStrokes: { [key in DeviceInformation['mode']]: string } = {
+  0: 'var(--muted-foreground)',
+  1: 'var(--chart-1)', // align with Max Temperature (typically red)
+  2: 'var(--chart-3)', // align with Min Temperature (typically blue)
+  3: 'var(--chart-2)',
+  4: 'var(--chart-5)',
 };
 
 type ChartDataPoint = {
@@ -51,12 +62,14 @@ type DeviceDataGraphProps = {
   deviceId: string;
   startDate: Date;
   period: number;
+  showLabels: boolean;
 };
 
-export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraphProps) {
+export function DeviceDataGraph({ deviceId, startDate, period, showLabels: defaultShowLabels }: DeviceDataGraphProps) {
   const device = useDevice(deviceId);
   const { data, isLoading } = useChartData({ deviceId, startDate, period });
   const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
+  const [showLabels, setShowLabels] = useState(defaultShowLabels);
 
   const chartData: ChartDataPoint[] =
     data?.map((record: Record) => ({
@@ -217,27 +230,31 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
                   }
                 />
                 {chartData.length > 0 && (
-                  <ReferenceLine x={chartData[0].time}>
-                    <Label
-                      value={modeLabels[chartData[0].mode]}
-                      position="insideTopLeft"
-                      style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
-                    />
+                  <ReferenceLine x={chartData[0].time} stroke={modeStrokes[chartData[0].mode]} strokeWidth={1}>
+                    {showLabels && (
+                      <Label
+                        value={modeLabels[chartData[0].mode]}
+                        position="insideTopLeft"
+                        style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+                      />
+                    )}
                   </ReferenceLine>
                 )}
                 {modeChangePoints.map((changePoint: ModeChangePoint, index: number) => (
                   <ReferenceLine
                     key={`mode-change-${index}`}
                     x={changePoint.x}
-                    stroke="var(--muted-foreground)"
+                    stroke={modeStrokes[changePoint.mode]}
                     strokeDasharray="5 5"
                     strokeWidth={1}
                   >
-                    <Label
-                      value={modeLabels[changePoint.mode]}
-                      position="insideTopLeft"
-                      style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
-                    />
+                    {showLabels && (
+                      <Label
+                        value={modeLabels[changePoint.mode]}
+                        position="insideTopLeft"
+                        style={{ fontSize: '12px', fill: 'var(--muted-foreground)' }}
+                      />
+                    )}
                   </ReferenceLine>
                 ))}
                 <Line
@@ -269,6 +286,23 @@ export function DeviceDataGraph({ deviceId, startDate, period }: DeviceDataGraph
           </ChartContainer>
         )}
       </CardContent>
+      <CardFooter className="flex flex-col items-end">
+          <LabelUI htmlFor="show-labels">
+            <span className="text-sm font-medium leading-none cursor-pointer">
+            Show Mode Labels
+            </span>
+            <Checkbox
+              id="show-labels"
+              aria-label="Toggle labels"
+              checked={showLabels}
+              onCheckedChange={(value) => {
+                const next = !!value;
+                setShowLabels(next);
+                document.cookie = `show_labels=${next}; path=/; max-age=${60 * 60 * 24 * 7}`;
+              }}
+            />
+          </LabelUI>
+      </CardFooter>
     </Card>
   );
 }

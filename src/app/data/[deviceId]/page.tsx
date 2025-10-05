@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { DeviceDataGraph } from '@/components/data/DeviceDataGraph';
 import { DeviceDataPageBreadcrumbs } from '@/components/data/DeviceDataPageBreadcrumbs';
 import { PageContent, PageHeader, PageWrapper } from '@/components/layout/PageLayout';
+import { cookies } from 'next/headers';
 
 export default async function DeviceDataPage({
   searchParams,
@@ -11,6 +12,9 @@ export default async function DeviceDataPage({
   searchParams: Promise<Partial<{ start: string; period: string }>>;
   params: Promise<{ deviceId: string }>;
 }) {
+  const cookiesStore = await cookies();
+  const showLabels = cookiesStore.get('show_labels')?.value !== 'false';
+
   const { deviceId } = await params;
   const { start, period } = await searchParams;
 
@@ -29,7 +33,7 @@ export default async function DeviceDataPage({
         <DeviceDataPageBreadcrumbs deviceId={deviceId} />
       </PageHeader>
       <PageContent>
-        <DeviceDataGraph deviceId={deviceId} startDate={new Date(parseInt(start, 10))} period={parseInt(period, 10)} />
+        <DeviceDataGraph deviceId={deviceId} startDate={new Date(parseInt(start, 10))} period={parseInt(period, 10)} showLabels={showLabels} />
       </PageContent>
     </PageWrapper>
   );
