@@ -18,6 +18,10 @@ function RenderDaysOfWeek({ daysMask }: { daysMask: number }) {
     return <p>Weekdays</p>;
   }
 
+  if (daysMask === 65) {
+    return <p>Weekends</p>;
+  }
+
   if (daysMask === 127 || daysMask === 0) {
     return <p>Everyday</p>;
   }
