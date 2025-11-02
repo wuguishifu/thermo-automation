@@ -84,7 +84,7 @@ export function AppSidebar() {
             <SidebarMenuButton asChild>
               <Link href="https://github.com/wuguishifu/thermo-automation" target="_blank">
                 <Code />
-                <span>Version 0.1.6</span>
+                <span>Version 0.1.7</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
