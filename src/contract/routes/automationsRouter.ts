@@ -28,6 +28,7 @@ export const automationsRouter = c.router(
         maxTemperature: z.number().optional().nullable(),
         minTemperature: z.number().optional().nullable(),
         bufferDegrees: z.number().optional(),
+        daysMask: z.number().optional(),
       }),
       responses: {
         200: Automation,
@@ -44,6 +45,7 @@ export const automationsRouter = c.router(
         maxTemperature: z.number().optional(),
         minTemperature: z.number().optional(),
         bufferDegrees: z.number(),
+        daysMask: z.number(),
       }),
       responses: {
         201: Automation,

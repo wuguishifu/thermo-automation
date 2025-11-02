@@ -1,0 +1,1 @@
+ALTER TABLE "automations" ADD COLUMN "days_mask" smallint DEFAULT 0 NOT NULL;

@@ -13,6 +13,8 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } fr
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { fromDaysMask, toDaysMask } from '@/db/schema';
 import { useDevices } from '@/hooks/useDevices';
 import {
   convertNonLocalizedTemperature,
@@ -29,6 +31,7 @@ const formSchema = z.object({
   minTemperature: z.number().optional(),
   bufferDegrees: z.number().min(0.5).max(5),
   wraps: z.boolean(),
+  daysMask: z.number(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -51,6 +54,7 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
       minTemperature: undefined,
       bufferDegrees: 2,
       wraps: false,
+      daysMask: 0,
     },
   });
 
@@ -87,6 +91,7 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
           ? convertTemperatureForStorage(values.minTemperature, temperatureDisplay)
           : undefined,
         bufferDegrees: convertNonLocalizedTemperature(values.bufferDegrees, temperatureDisplay),
+        daysMask: values.daysMask,
       };
 
       createAutomation(submitValues)
@@ -135,6 +140,46 @@ export function CreateAutomationDialog({ children, asChild }: Props) {
                         ))}
                       </SelectContent>
                     </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="daysMask"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Days</FormLabel>
+                    <FormDescription>Days of the week to run this automation</FormDescription>
+                    <ToggleGroup
+                      type="multiple"
+                      className="flex flex-row w-full"
+                      onValueChange={(value) => {
+                        field.onChange(toDaysMask(value.map(Number)));
+                      }}
+                      value={fromDaysMask(field.value).map(String)}
+                    >
+                      <ToggleGroupItem value="0" className="flex-1">
+                        S
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="1" className="flex-1">
+                        M
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="2" className="flex-1">
+                        T
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="3" className="flex-1">
+                        W
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="4" className="flex-1">
+                        R
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="5" className="flex-1">
+                        F
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="6" className="flex-1">
+                        S
+                      </ToggleGroupItem>
+                    </ToggleGroup>
                   </FormItem>
                 )}
               />

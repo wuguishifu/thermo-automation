@@ -100,14 +100,16 @@ class ThermostatService {
     }
   }
 
-  private async getCurrentAutomations(timezone: string) {
+  public async getCurrentAutomations(timezone: string) {
     const now = sql`(CURRENT_TIME AT TIME ZONE ${timezone})::time`;
+    const currentDayOfWeek = sql`EXTRACT(DOW FROM CURRENT_TIMESTAMP AT TIME ZONE ${timezone})::integer`;
     return await this.db
       .select()
       .from(automationsSchema)
       .where(
         and(
           eq(automationsSchema.enabled, true),
+          sql`(${automationsSchema.daysMask} & (1 << ${currentDayOfWeek})) != 0`,
           or(
             and(gt(now, automationsSchema.startsAt), lte(now, automationsSchema.endsAt)),
             // overnight case

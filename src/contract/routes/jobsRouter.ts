@@ -4,6 +4,17 @@ import { c } from '@/contract/contract';
 
 export const jobsRouter = c.router(
   {
+    debugGetCurrentJobs: {
+      summary: 'Get current jobs for debugging',
+      method: 'GET',
+      path: '/current',
+      query: z.object({
+        timezone: z.string().default('UTC'),
+      }),
+      responses: {
+        200: z.any().optional(),
+      },
+    },
     handleAutomationJob: {
       summary: 'Cron job endpoint',
       method: 'POST',

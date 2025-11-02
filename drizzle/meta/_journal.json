@@ -50,6 +50,13 @@
       "when": 1759682720560,
       "tag": "0006_huge_hammerhead",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1762107231804,
+      "tag": "0007_daffy_sheva_callister",
+      "breakpoints": true
     }
   ]
 }

@@ -9,6 +9,12 @@ import { thermostatService } from '@/server/thermostatService';
 const handler = createNextHandler(
   rootRouter.api.jobs,
   {
+    debugGetCurrentJobs: async ({ query }) => {
+      return {
+        status: 200,
+        body: await thermostatService.getCurrentAutomations(query.timezone),
+      };
+    },
     handleAutomationJob: async () => {
       try {
         await thermostatService.handleJob();
@@ -37,4 +43,4 @@ const handler = createNextHandler(
   },
 );
 
-export { handler as POST };
+export { handler as GET, handler as POST };

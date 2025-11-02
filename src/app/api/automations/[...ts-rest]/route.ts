@@ -23,6 +23,7 @@ const handler = createNextHandler(
           minTemperature: schema.automations.minTemperature,
           bufferDegrees: schema.automations.bufferDegrees,
           enabled: schema.automations.enabled,
+          daysMask: schema.automations.daysMask,
         })
         .from(schema.automations)
         .where(deviceId ? eq(schema.automations.deviceId, deviceId) : undefined)
@@ -53,6 +54,7 @@ const handler = createNextHandler(
           minTemperature: schema.automations.minTemperature,
           bufferDegrees: schema.automations.bufferDegrees,
           enabled: schema.automations.enabled,
+          daysMask: schema.automations.daysMask,
         });
       return {
         status: 200,
@@ -61,17 +63,7 @@ const handler = createNextHandler(
     },
     createAutomation: async ({ body }) => {
       const db = getDb();
-      const [automation] = await db
-        .insert(schema.automations)
-        .values({
-          deviceId: body.deviceId,
-          startsAt: body.startsAt,
-          endsAt: body.endsAt,
-          maxTemperature: body.maxTemperature,
-          minTemperature: body.minTemperature,
-          bufferDegrees: body.bufferDegrees,
-        })
-        .returning();
+      const [automation] = await db.insert(schema.automations).values(body).returning();
       return {
         status: 201,
         body: automation,

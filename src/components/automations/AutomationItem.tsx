@@ -4,11 +4,32 @@ import Link from 'next/link';
 import { AutomationItemOptions } from '@/components/automations/AutomationItemOptions';
 import { Temperature } from '@/components/devices/Temperature';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
+import { fromDaysMask } from '@/db/schema';
 import { cn } from '@/lib/utils';
 import { formatNonLocalizedTemperature } from '@/lib/utils/temperature';
 import { useAppSelector } from '@/state/store';
 import { Automation } from '@/types/automation';
 import { Device } from '@/types/device';
+
+const daysOfWeek = ['S', 'M', 'T', 'W', 'R', 'F', 'S'];
+
+function RenderDaysOfWeek({ daysMask }: { daysMask: number }) {
+  if (daysMask === 62) {
+    return <p>Weekdays</p>;
+  }
+
+  if (daysMask === 127 || daysMask === 0) {
+    return <p>Everyday</p>;
+  }
+
+  return (
+    <p>
+      {fromDaysMask(daysMask)
+        .map((day) => daysOfWeek[day])
+        .join('')}
+    </p>
+  );
+}
 
 export function AutomationItem({ automation, device }: { automation: Automation; device?: Device }) {
   const temperatureDisplay = useAppSelector((state) => state.settings.temperatureDisplay);
@@ -33,6 +54,7 @@ export function AutomationItem({ automation, device }: { automation: Automation;
         <p>
           {automation.startsAt} - {automation.endsAt}
         </p>
+        <RenderDaysOfWeek daysMask={automation.daysMask} />
         <p>
           {automation.minTemperature ? <Temperature celsiusValue={automation.minTemperature} /> : 'No min'} -{' '}
           {automation.maxTemperature ? <Temperature celsiusValue={automation.maxTemperature} /> : 'No max'}

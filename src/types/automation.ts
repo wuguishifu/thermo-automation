@@ -11,5 +11,6 @@ export const Automation = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   enabled: z.boolean(),
+  daysMask: z.number(),
 });
 export type Automation = z.infer<typeof Automation>;
