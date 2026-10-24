@@ -1,5 +1,7 @@
 # Thermo Automation
 
+> Note: this project is deprecated and has been moved into the [Universe monorepo](https://github.com/wuguishifu/universe).
+
 This is a self-hostable project to automate Daikin thermometers.
 
 ## Todo
